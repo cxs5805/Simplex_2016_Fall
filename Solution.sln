@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicX", "BasicX\BasicX.vcxproj", "{E745E25C-0143-42AC-A486-1395A4C972AE}"
 EndProject
@@ -121,6 +121,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "24_Physics", "24_Physics\24_Physics.vcxproj", "{58CB6636-1057-466F-AB91-BADB3395421A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E03_Repository", "E03_Repository\E03_Repository.vcxproj", "{6DEFDEF1-491A-4190-8F98-3B404A7CA9A6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12_MeshClassCpy", "12_MeshClassCpy\12_MeshClassCpy.vcxproj", "{25692D36-4F97-4199-96B5-E2FE9F1F7938}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -278,6 +280,10 @@ Global
 		{6DEFDEF1-491A-4190-8F98-3B404A7CA9A6}.Debug|x86.Build.0 = Debug|Win32
 		{6DEFDEF1-491A-4190-8F98-3B404A7CA9A6}.Release|x86.ActiveCfg = Release|Win32
 		{6DEFDEF1-491A-4190-8F98-3B404A7CA9A6}.Release|x86.Build.0 = Release|Win32
+		{25692D36-4F97-4199-96B5-E2FE9F1F7938}.Debug|x86.ActiveCfg = Debug|Win32
+		{25692D36-4F97-4199-96B5-E2FE9F1F7938}.Debug|x86.Build.0 = Debug|Win32
+		{25692D36-4F97-4199-96B5-E2FE9F1F7938}.Release|x86.ActiveCfg = Release|Win32
+		{25692D36-4F97-4199-96B5-E2FE9F1F7938}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -324,5 +330,6 @@ Global
 		{44D2C07B-798D-461B-9019-DFB240593888} = {5D1FB011-A2D8-4107-890B-BF1ACD0C0994}
 		{58CB6636-1057-466F-AB91-BADB3395421A} = {E0A09DA7-AF20-49C2-84DC-481ADDD01DCA}
 		{6DEFDEF1-491A-4190-8F98-3B404A7CA9A6} = {13CD5CAF-2378-4851-9BEB-DF01D5A85C42}
+		{25692D36-4F97-4199-96B5-E2FE9F1F7938} = {E0A09DA7-AF20-49C2-84DC-481ADDD01DCA}
 	EndGlobalSection
 EndGlobal
