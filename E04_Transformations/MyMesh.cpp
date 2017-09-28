@@ -63,7 +63,7 @@ void MyMesh::Swap(MyMesh& other)
 	std::swap(m_lVertexCol, other.m_lVertexCol);
 
 	std::swap(m_pShaderMngr, other.m_pShaderMngr);
-}/*
+}
 void MyMesh::CompleteMesh(vector3 a_v3Color)
 {
 	uint uColorCount = m_lVertexCol.size();
@@ -153,7 +153,7 @@ void MyMesh::AddTri(vector3 a_vBottomLeft, vector3 a_vBottomRight, vector3 a_vTo
 {
 	//C
 	//| \
-			//A--B
+		//A--B
 //This will make the triangle A->B->C 
 	AddVertexPosition(a_vBottomLeft);
 	AddVertexPosition(a_vBottomRight);
@@ -413,4 +413,4 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
-}//*/
+}

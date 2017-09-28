@@ -18,6 +18,69 @@ void Application::InitVariables(void)
 	//Make MyMesh object
 	m_pMesh1 = new MyMesh();
 	m_pMesh1->GenerateCube(1.0f, C_WHITE);
+
+	// E04 new stuff
+	// generate each cube manually
+	// really processor intensive, but it just works
+	// pointer array of 48 cubes
+	cubes = new MyMesh[48];
+
+	std::vector<vector3> positions =
+	{
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 (),
+		vector3 ()
+	};
+
+	for (int i = 0; i < 48; i++)
+	{
+		cubes[i].GenerateCube(2.0f, C_BLACK);
+	}
 }
 void Application::Update(void)
 {
@@ -65,6 +128,12 @@ void Application::Display(void)
 }
 void Application::Release(void)
 {
+	if (cubes != nullptr)
+	{
+		delete[] cubes;
+		cubes = nullptr;
+	}
+
 	if (m_pMesh != nullptr)
 	{
 		delete m_pMesh;
