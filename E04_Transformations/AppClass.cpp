@@ -20,66 +20,77 @@ void Application::InitVariables(void)
 	m_pMesh1->GenerateCube(1.0f, C_WHITE);
 
 	// E04 new stuff
+
+	// const int to keep track of number of cubes in invader
+	const int NUM_CUBES = 46;
+
 	// generate each cube manually
 	// really processor intensive, but it just works
-	// pointer array of 48 cubes
-	cubes = new MyMesh[48];
+	// pointer array of 46 cubes
+	cubes = new MyMesh[NUM_CUBES];
 
 	std::vector<vector3> positions =
 	{
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 (),
-		vector3 ()
+		vector3 (2.0f, 7.0f, 0.0f),
+		vector3 (8.0f, 7.0f, 0.0f),
+		
+		vector3 (3.0f, 6.0f, 0.0f),
+		vector3 (7.0f, 6.0f, 0.0f),
+		
+		vector3 (2.0f, 5.0f, 0.0f),
+		vector3 (3.0f, 5.0f, 0.0f),
+		vector3 (4.0f, 5.0f, 0.0f),
+		vector3 (5.0f, 5.0f, 0.0f),
+		vector3 (6.0f, 5.0f, 0.0f),
+		vector3 (7.0f, 5.0f, 0.0f),
+		vector3 (8.0f, 5.0f, 0.0f),
+
+		vector3 (1.0f, 4.0f, 0.0f),
+		vector3 (2.0f, 4.0f, 0.0f),
+		vector3 (4.0f, 4.0f, 0.0f),
+		vector3 (5.0f, 4.0f, 0.0f),
+		vector3 (6.0f, 4.0f, 0.0f),
+		vector3 (8.0f, 4.0f, 0.0f),
+		vector3 (9.0f, 4.0f, 0.0f),
+		
+		vector3 (0.0f, 3.0f, 0.0f),
+		vector3 (1.0f, 3.0f, 0.0f),
+		vector3 (2.0f, 3.0f, 0.0f),
+		vector3 (3.0f, 3.0f, 0.0f),
+		vector3 (4.0f, 3.0f, 0.0f),
+		vector3 (5.0f, 3.0f, 0.0f),
+		vector3 (6.0f, 3.0f, 0.0f),
+		vector3 (7.0f, 3.0f, 0.0f),
+		vector3 (8.0f, 3.0f, 0.0f),
+		vector3 (9.0f, 3.0f, 0.0f),
+		vector3 (10.0f, 3.0f, 0.0f),
+
+		vector3 (0.0f, 2.0f, 0.0f),
+		vector3 (2.0f, 2.0f, 0.0f),
+		vector3 (3.0f, 2.0f, 0.0f),
+		vector3 (4.0f, 2.0f, 0.0f),
+		vector3 (5.0f, 2.0f, 0.0f),
+		vector3 (6.0f, 2.0f, 0.0f),
+		vector3 (7.0f, 2.0f, 0.0f),
+		vector3 (8.0f, 2.0f, 0.0f),
+		vector3 (10.0f, 2.0f, 0.0f),
+
+		vector3 (0.0f, 1.0f, 0.0f),
+		vector3 (2.0f, 1.0f, 0.0f),
+		vector3 (8.0f, 1.0f, 0.0f),
+		vector3 (10.0f, 1.0f, 0.0f),
+
+		vector3 (3.0f, 0.0f, 0.0f),
+		vector3 (4.0f, 0.0f, 0.0f),
+		vector3 (6.0f, 0.0f, 0.0f),
+		vector3 (7.0f, 0.0f, 0.0f)/*,
+		vector3 (.0f, 0.0f, 0.0f),
+		vector3 (.0f, 0.0f, 0.0f)*/
 	};
 
-	for (int i = 0; i < 48; i++)
+	for (int i = 0; i < NUM_CUBES; i++)
 	{
-		cubes[i].GenerateCube(2.0f, C_BLACK);
+		cubes[i].GenerateCube(1.0f, C_BLACK);
 	}
 }
 void Application::Update(void)
