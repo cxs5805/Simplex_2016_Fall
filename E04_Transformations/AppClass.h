@@ -14,6 +14,12 @@ Date: 2017/05
 
 class Application
 {
+	// const int to keep track of number of cubes in invader
+	const int NUM_CUBES = 46;
+
+	// std::vector to keep track of the translation matrices for each cube
+	std::vector<matrix4> matrices;
+
 	MyMesh* m_pMesh = nullptr;
 	MyMesh* m_pMesh1 = nullptr;
 	MyMesh* cubes = nullptr;

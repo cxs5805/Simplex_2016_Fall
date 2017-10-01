@@ -20,10 +20,6 @@ void Application::InitVariables(void)
 	m_pMesh1->GenerateCube(1.0f, C_WHITE);
 
 	// E04 new stuff
-
-	// const int to keep track of number of cubes in invader
-	const int NUM_CUBES = 46;
-
 	// generate each cube manually
 	// really processor intensive, but it just works
 	// pointer array of 46 cubes
@@ -88,9 +84,17 @@ void Application::InitVariables(void)
 		vector3 (.0f, 0.0f, 0.0f)*/
 	};
 
+
 	for (int i = 0; i < NUM_CUBES; i++)
 	{
+		// generate each cube
 		cubes[i].GenerateCube(1.0f, C_BLACK);
+
+		// position each cube accordingly
+		matrices.push_back(matrix4());
+		matrices[i] = glm::translate(matrices[i], positions[i]);
+
+		std::cout << "position #" << i << ": (" << positions[i].x << ", " << positions[i].y << ", " << positions[i].z << ")\n";
 	}
 }
 void Application::Update(void)
@@ -111,17 +115,24 @@ void Application::Display(void)
 
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
-	static matrix4 m4Model;//ToMatrix4(m_qArcBall);
+	//static matrix4 m4Model;//ToMatrix4(m_qArcBall);
 
 	// aahhhhhhhhhhh processor-dependent operations
 	//m4Model = glm::rotate(m4Model, 1.0f, vector3(0.0f, 0.0f, 1.0f));//ToMatrix4(m_qArcBall);
-	m4Model = glm::scale(m4Model, vector3(1.1f, 1.0f, 1.0f));//ToMatrix4(m_qArcBall);
+	//m4Model = glm::scale(m4Model, vector3(1.1f, 1.0f, 1.0f));//ToMatrix4(m_qArcBall);
 	//m4Model = glm::translate(m4Model, vector3(0.1f, 0.0f, 0.0f));//ToMatrix4(m_qArcBall);
 
 	// remember, order matters in matrix multiplication
-	m_pMesh->Render(m4Projection, m4View, m4Model);
+	//m_pMesh->Render(m4Projection, m4View, m4Model);
 	//m_pMesh1->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), glm::translate(vector3( 3.0f, 0.0f, 0.0f)));
-		
+	
+	// render each of the invader cubes
+	for (int i = 0; i < NUM_CUBES; i++)
+	{
+		matrices[i] = glm::translate(matrices[i], vector3(0.1f, 0.0f, 0.0f));
+		cubes[i].Render(m4Projection, m4View, matrices[i]);
+	}
+
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
 	
