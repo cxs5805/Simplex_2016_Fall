@@ -617,7 +617,7 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	float tempHeight = 0.0f;
 
 	// std::vector to keep track of each ring
-	std::vector<std::vector<vector3>> rings(a_nSubdivisions);
+	std::vector<std::vector<vector3>> rings(a_nSubdivisions - 1);
 
 	// DEBUG
 	std::cout << "ABOUT TO ENTER RING LOOP\ncurrent radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
@@ -635,12 +635,129 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		std::cout << "current radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
 
 		// generate a circle of points at the current radius and height
-		//rings[i] = GenerateCircleOfPoints(tempRadius, a_nSubdivisions, angle, tempHeight);
+		rings[i] = GenerateCircleOfPoints(tempRadius, a_nSubdivisions, angle, tempHeight);
 
 		// increment angle
 		tempVertAngle += vertAngle;
 	}
 
+	int size = rings.size();
+	bool middleDone = false;
+	// now, draw points!
+	// draw each face, remember BOTH SIDES
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		int nextI = i + 1;
+		if (i == a_nSubdivisions - 1)
+			nextI = 0;
+
+		// top base, both sides
+		AddTri(rings[0][i], rings[0][nextI], centerTop);
+		AddTri(rings[0][nextI], rings[0][i], centerTop);
+		//AddQuad(topOuterRadiusPoints[next], topOuterRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
+
+		// special case: 3 subdivisions and therefore 2 rings
+		if (size == 2)
+		{
+			std::cout << "size is 2!\n";
+		}
+
+		if (!middleDone && size > 2)
+		{
+			/*
+			// THIS ONLY DOES ONE FACE!!!!
+			// loop for each middle ring, both sides
+			for (int j = 0; j < size - 1; j++)
+			{
+				int nextJ = j + 1;
+				if (j == size - 1)
+					nextJ = 0;
+
+				AddQuad(rings[i + 1][j], rings[i + 1][nextJ], rings[i][j], rings[i][nextJ]);
+				AddQuad(rings[i + 1][nextJ], rings[i + 1][j], rings[i][nextJ], rings[i][j]);
+			}
+			middleDone = true;
+			//*/
+		}
+		/*
+		// loop for each middle ring, both sides
+		for (int j = 0; j < size - 1; j++)
+		{
+			int nextJ = j + 1;
+			if (j == size - 1)
+				nextJ = 0;
+
+			AddQuad(rings[i + 1][j], rings[i + 1][nextJ], rings[i][j], rings[i][nextJ]);
+			AddQuad(rings[i + 1][nextJ], rings[i + 1][j], rings[i][nextJ], rings[i][j]);
+		}
+		//*/
+		// outer middle
+		//AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], topOuterRadiusPoints[i], topOuterRadiusPoints[next]);
+		//AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], topOuterRadiusPoints[next], topOuterRadiusPoints[i]);
+
+		// inner middle
+		//AddQuad(bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next], topInnerRadiusPoints[i], topInnerRadiusPoints[next]);
+		//AddQuad(bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
+
+		// bottom base, both sides
+		AddTri(rings[size - 1][nextI], rings[size - 1][i], centerBottom);
+		AddTri(rings[size - 1][i], rings[size - 1][nextI], centerBottom);
+		//AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next]);
+		//AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i]);
+	}
+
+	// an alternate approach
+	// a separate loop for the middle faces that only executes once
+	if (size == 2)
+	{
+		for (int i = 0; i < a_nSubdivisions; i++)
+		{
+			int next = i + 1;
+			if (i == a_nSubdivisions - 1)
+				next = 0;
+
+			AddQuad(rings[1][i], rings[1][next], rings[0][i], rings[0][next]);
+			AddQuad(rings[1][next], rings[1][i], rings[0][next], rings[0][i]);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < size - 1; i++)
+		{
+			int nextI = i + 1;
+			//if (i == a_nSubdivisions - 1)
+			//	nextI = 0;
+
+			for (int j = 0; j < a_nSubdivisions; j++)
+			{
+				int nextJ = j + 1;
+				if (j == a_nSubdivisions - 1)
+					nextJ = 0;
+
+				std::cout << "now, do both sides of rings[" << nextI << "][" << j << "] and rings[" << i << "][" << nextJ << "]\n";
+				
+				// this is the hard part
+				AddQuad(rings[nextI][j], rings[nextI][nextJ], rings[i][j], rings[i][nextJ]);
+				AddQuad(rings[nextI][nextJ], rings[nextI][j], rings[i][nextJ], rings[i][j]);
+			}
+		}
+	}
+
+	// THIS IS GOLDEN CONCEPTUALLY, LEAVE IT COMMENTED OUT
+	// BUT, DO NOT REMOVE THIS BLOCK OF CODE UNTIL 100% DONE
+	// When a_nSubdivisions == 3, this works perfectly!
+	// but for a_nSubdivisions >= 4, it only draws one ring of faces
+	/*
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		int next = i + 1;
+		if (i == a_nSubdivisions - 1)
+			next = 0;
+
+		AddQuad(rings[1][i], rings[1][next], rings[0][i], rings[0][next]);
+		AddQuad(rings[1][next], rings[1][i], rings[0][next], rings[0][i]);
+	}
+	//*/
 	// -------------------------------
 
 	// Adding information about color
