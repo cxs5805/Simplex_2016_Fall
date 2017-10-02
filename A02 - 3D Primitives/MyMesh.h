@@ -211,6 +211,8 @@ public:
 	OUTPUT: ---
 	*/
 	void GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Color = C_WHITE);
+
+	std::vector<vector3> GenerateCircleOfPoints(float radius, float numSubdivisions, float angle, float zValue);
 #pragma endregion
 };
 

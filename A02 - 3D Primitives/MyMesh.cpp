@@ -276,7 +276,73 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+	//*
+	// pointy point
+	vector3 point(0.0f, 0.0f, 0.0f);
+
+	// center point on flat end of cone
+	vector3 center(point.x, point.y, a_fHeight);
+
+	// first, angle
+	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
+	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+
+	// next, temp angle to increment as we go thru loop without
+	// having to override or recall the original angle value
+	float tempAngle = angle;
+
+	// then temp vector to keep track of where in (x,y) to put next point
+	vector2 temp(a_fRadius, 0.0f);
+
+	// array points
+	std::vector<vector3> basePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, a_fHeight);
+
+	// generate faces, but how?
+	// you need to loop over the points
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		int next = i + 1;
+		if (i == a_nSubdivisions - 1)
+			next = 0;
+
+		// base, both sides
+		AddTri(basePoints[i], basePoints[next], center);
+		AddTri(basePoints[next], basePoints[i], center);
+
+		// coney pointy part, both sides
+		AddTri(basePoints[i], basePoints[next], point);
+		AddTri(basePoints[next], basePoints[i], point);
+	}
+
+	// loop for each subdivision
+	//for (int i = 0; i < a_nSubdivisions; i++)
+	//{
+	//	// set point based on current directional vector
+	//	basePoints[i] = vector3(temp, a_fHeight);
+	//
+	//	// DEBUG
+	//	std::cout << "(" << basePoints[i].x << ", " << basePoints[i].y << ", " << basePoints[i].z << ")"
+	//		<< "\ncurrent angle = " << tempAngle << "\n\n";
+	//	
+	//	// increment directional vector by angle
+	//	// but, how?
+	//	//temp = vector2(glm::cos(basePoints[i].x), glm::sin(basePoints[i].y));
+	//	//if (i == 0);
+	//
+	//	// here's a thought
+	//	// set the temp = radius * (cos(angle), sin(angle));
+	//	temp = a_fRadius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
+	//	// increment current angle by original angle amount for a uniform increment
+	//	tempAngle += angle;
+	//
+	//	// what I'm doing now, (not working)
+	//	//temp = vector2(glm::sin(temp.x / a_fRadius), glm::cos(temp.y / a_fRadius));
+	//	// else temp = vector
+	//}
+	//*/
+
 	// -------------------------------
 
 	// Adding information about color
@@ -300,7 +366,69 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	
+	//*
+	// center point on top
+	vector3 centerTop(0.0f, 0.0f, 0.0f);
+
+	// center point on flat end of cylinder
+	vector3 centerBottom(centerTop.x, centerTop.y, a_fHeight);
+
+	// first, angle
+	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
+	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+
+	// next, temp angle to increment as we go thru loop without
+	// having to override or recall the original angle value
+	float tempAngle = angle;
+
+	// then temp vector to keep track of where in (x,y) to put next point
+	vector2 temp(a_fRadius, 0.0f);
+
+	// array points
+	std::vector<vector3> topBasePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, 0.0f);
+
+	// loop for each subdivision
+	//for (int i = 0; i < a_nSubdivisions; i++)
+	//{
+	//	// set point based on current directional vector
+	//	topBasePoints[i] = vector3(temp, 0);
+	//
+	//	// DEBUG
+	//	std::cout << "(" << topBasePoints[i].x << ", " << topBasePoints[i].y << ", " << topBasePoints[i].z << ")"
+	//		<< "\ncurrent angle = " << tempAngle << "\n\n";
+	//
+	//	// increment directional vector by angle
+	//	// but, how?
+	//	//temp = vector2(glm::cos(topBasePoints[i].x), glm::sin(topBasePoints[i].y));
+	//	//if (i == 0);
+	//
+	//	// here's a thought
+	//	// set the temp = radius * (cos(angle), sin(angle));
+	//	temp = a_fRadius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
+	//	// increment current angle by original angle amount for a uniform increment
+	//	tempAngle += angle;
+	//
+	//	// what I'm doing now, (not working)
+	//	//temp = vector2(glm::sin(temp.x / a_fRadius), glm::cos(temp.y / a_fRadius));
+	//	// else temp = vector
+	//}
+
+	// array points
+	std::vector<vector3> bottomBasePoints(a_nSubdivisions);
+
+	// loop for each subdivision
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// set x and y based on top base points, then set z to height (top z = 0 for all points)
+		bottomBasePoints[i] = vector3(topBasePoints[i].x, topBasePoints[i].y, a_fHeight);
+		// DEBUG
+		std::cout << "(" << bottomBasePoints[i].x << ", " << bottomBasePoints[i].y << ", " << bottomBasePoints[i].z << ")\n\n";
+			//<< "\ncurrent angle = " << tempAngle << "\n\n";
+	}
+	//*/
+
 	// -------------------------------
 
 	// Adding information about color
@@ -330,7 +458,37 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	//*
+	// center point on top
+	//vector3 centerTop(0.0f, 0.0f, 0.0f);
+
+	// center point on flat end of cylinder
+	//vector3 centerBottom(centerTop.x, centerTop.y, a_fHeight);
+
+	// first, angle
+	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
+	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+
+	// next, temp angle to increment as we go thru loop without
+	// having to override or recall the original angle value
+	//float tempOuterAngle = angle;
+	//float tempInnerAngle = angle;
+
+	// then temp vector to keep track of where in (x,y) to put next point
+	//vector2 temp(a_fRadius, 0.0f);
+
+	// array points
+	std::vector<vector3> topOuterRadiusPoints = GenerateCircleOfPoints(a_fOuterRadius, a_nSubdivisions, angle, 0.0f);
+	std::vector<vector3> topInnerRadiusPoints = GenerateCircleOfPoints(a_fInnerRadius, a_nSubdivisions, angle, 0.0f);
+
+	std::vector<vector3> bottomOuterRadiusPoints(a_nSubdivisions);
+	std::vector<vector3> bottomInnerRadiusPoints(a_nSubdivisions);
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		bottomOuterRadiusPoints[i] = vector3(topOuterRadiusPoints[i].x, topOuterRadiusPoints[i].y, a_fHeight);
+		bottomInnerRadiusPoints[i] = vector3(topInnerRadiusPoints[i].x, topInnerRadiusPoints[i].y, a_fHeight);
+	}
 	// -------------------------------
 
 	// Adding information about color
@@ -393,4 +551,55 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
+}
+
+// helper method??? (hopefully in the future, prevent repeated code)
+std::vector<vector3> MyMesh::GenerateCircleOfPoints(float radius, float numSubdivisions, float angle, float zValue)
+{
+	vector2 temp(radius, 0.0f);
+	float tempAngle = angle;
+
+	std::vector<vector3> circleOfPoints(numSubdivisions);
+	
+	for (int i = 0; i < numSubdivisions; i++)
+	{
+		circleOfPoints[i] = vector3(temp, zValue);
+
+		// DEBUG
+		std::cout << "(" << circleOfPoints[i].x << ", " << circleOfPoints[i].y << ", " << circleOfPoints[i].z << ")"
+			<< "\ncurrent angle = " << tempAngle << "\n\n";
+
+		temp = radius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
+		tempAngle += angle;
+	}
+
+	/*
+	// loop for each subdivision
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// set point based on current directional vector
+		basePoints[i] = vector3(temp, a_fHeight);
+
+		// DEBUG
+		std::cout << "(" << basePoints[i].x << ", " << basePoints[i].y << ", " << basePoints[i].z << ")"
+			<< "\ncurrent angle = " << tempAngle << "\n\n";
+		
+		// increment directional vector by angle
+		// but, how?
+		//temp = vector2(glm::cos(basePoints[i].x), glm::sin(basePoints[i].y));
+		//if (i == 0);
+
+		// here's a thought
+		// set the temp = radius * (cos(angle), sin(angle));
+		temp = a_fRadius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
+		// increment current angle by original angle amount for a uniform increment
+		tempAngle += angle;
+
+		// what I'm doing now, (not working)
+		//temp = vector2(glm::sin(temp.x / a_fRadius), glm::cos(temp.y / a_fRadius));
+		// else temp = vector
+	}
+	*/
+
+	return circleOfPoints;
 }
