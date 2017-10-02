@@ -429,6 +429,27 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	}
 	//*/
 
+
+	// draw each face, remember BOTH SIDES
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		int next = i + 1;
+		if (i == a_nSubdivisions - 1)
+			next = 0;
+
+		// top base, both sides
+		AddTri(topBasePoints[i], topBasePoints[next], centerTop);
+		AddTri(topBasePoints[next], topBasePoints[i], centerTop);
+
+		// middle portion
+		AddQuad(bottomBasePoints[i], bottomBasePoints[next], topBasePoints[i], topBasePoints[next]);
+		AddQuad(bottomBasePoints[next], bottomBasePoints[i], topBasePoints[next], topBasePoints[i]);
+
+		// bottom base, both sides
+		AddTri(bottomBasePoints[i], bottomBasePoints[next], centerBottom);
+		AddTri(bottomBasePoints[next], bottomBasePoints[i], centerBottom);
+	}
+
 	// -------------------------------
 
 	// Adding information about color
@@ -489,6 +510,31 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 		bottomOuterRadiusPoints[i] = vector3(topOuterRadiusPoints[i].x, topOuterRadiusPoints[i].y, a_fHeight);
 		bottomInnerRadiusPoints[i] = vector3(topInnerRadiusPoints[i].x, topInnerRadiusPoints[i].y, a_fHeight);
 	}
+
+	// draw each face, remember BOTH SIDES
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		int next = i + 1;
+		if (i == a_nSubdivisions - 1)
+			next = 0;
+
+		// top ring, both sides
+		AddQuad(topOuterRadiusPoints[i], topOuterRadiusPoints[next], topInnerRadiusPoints[i], topInnerRadiusPoints[next]);
+		AddQuad(topOuterRadiusPoints[next], topOuterRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
+
+		// outer middle
+		AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], topOuterRadiusPoints[i], topOuterRadiusPoints[next]);
+		AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], topOuterRadiusPoints[next], topOuterRadiusPoints[i]);
+
+		// inner middle
+		AddQuad(bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next], topInnerRadiusPoints[i], topInnerRadiusPoints[next]);
+		AddQuad(bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
+
+		// bottom ring, both sides
+		AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next]);
+		AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i]);
+	}
+
 	// -------------------------------
 
 	// Adding information about color
@@ -545,7 +591,56 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+	// center top
+	vector3 centerTop(0.0f, 0.0f, a_fRadius);
+
+	// center bottom
+	vector3 centerBottom(centerTop.x, centerTop.y, -a_fRadius);
+
+	// angle of horizontal increment (for a ring of points at a given height)
+	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
+	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+
+	// angle of vertical increment
+	float vertAngle = glm::pi<float>() / a_nSubdivisions;
+	std::cout << "vertical angle = " << vertAngle << ", pi = " << vertAngle * a_nSubdivisions << "\n";
+
+	// temp angle for iterating thru the rings
+	// this goes from 0 to pi, rather than 0 to 2pi like the temp angle in GenerateCircleOfPoints
+	float tempVertAngle = vertAngle;
+	
+	// temps to keep track of radius and height at which to generate a new ring
+	//vector2 temp(0.0f, 0.0f);
+	float tempRadius = 0.0f;
+	float tempHeight = 0.0f;
+
+	// std::vector to keep track of each ring
+	std::vector<std::vector<vector3>> rings(a_nSubdivisions);
+
+	// DEBUG
+	std::cout << "ABOUT TO ENTER RING LOOP\ncurrent radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
+
+	// you may need to make the # of iterations (subdivisions - 1) if the last ring is at the height of centerBottom
+	for (int i = 0; i < a_nSubdivisions - 1; i++)
+	{
+		// update the radius and height 
+		// this gets done first so that the first ring isn't at the same height as the center top
+		//temp = vector2();
+		tempRadius = a_fRadius * glm::sin(tempVertAngle);
+		tempHeight = (a_fRadius * glm::cos(tempVertAngle));// +(a_fRadius / 2);
+
+		// DEBUG
+		std::cout << "current radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
+
+		// generate a circle of points at the current radius and height
+		//rings[i] = GenerateCircleOfPoints(tempRadius, a_nSubdivisions, angle, tempHeight);
+
+		// increment angle
+		tempVertAngle += vertAngle;
+	}
+
 	// -------------------------------
 
 	// Adding information about color
