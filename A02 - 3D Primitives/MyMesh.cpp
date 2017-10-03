@@ -280,10 +280,14 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 
 	//*
 	// pointy point
-	vector3 point(0.0f, 0.0f, 0.0f);
+	float pointZ = 0.0f;
+	pointZ = a_fHeight / 2;
+	vector3 point(0.0f, 0.0f, pointZ);
 
 	// center point on flat end of cone
-	vector3 center(point.x, point.y, a_fHeight);
+	float centerZ = a_fHeight;
+	centerZ = -pointZ;
+	vector3 center(point.x, point.y, centerZ);
 
 	// first, angle
 	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
@@ -297,7 +301,7 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	vector2 temp(a_fRadius, 0.0f);
 
 	// array points
-	std::vector<vector3> basePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, a_fHeight);
+	std::vector<vector3> basePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, centerZ);
 
 	// generate faces, but how?
 	// you need to loop over the points
@@ -370,10 +374,14 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	
 	//*
 	// center point on top
-	vector3 centerTop(0.0f, 0.0f, 0.0f);
+	float centerTopZ = 0.0f;
+	centerTopZ = a_fHeight / 2;
+	vector3 centerTop(0.0f, 0.0f, centerTopZ);
 
 	// center point on flat end of cylinder
-	vector3 centerBottom(centerTop.x, centerTop.y, a_fHeight);
+	float centerBottomZ = a_fHeight;
+	centerBottomZ = -centerTopZ;
+	vector3 centerBottom(centerTop.x, centerTop.y, centerBottomZ);
 
 	// first, angle
 	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
@@ -387,7 +395,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	vector2 temp(a_fRadius, 0.0f);
 
 	// array points
-	std::vector<vector3> topBasePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, 0.0f);
+	std::vector<vector3> topBasePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, centerTopZ);
 
 	// loop for each subdivision
 	//for (int i = 0; i < a_nSubdivisions; i++)
@@ -422,7 +430,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		// set x and y based on top base points, then set z to height (top z = 0 for all points)
-		bottomBasePoints[i] = vector3(topBasePoints[i].x, topBasePoints[i].y, a_fHeight);
+		bottomBasePoints[i] = vector3(topBasePoints[i].x, topBasePoints[i].y, centerBottomZ);
 		// DEBUG
 		std::cout << "(" << bottomBasePoints[i].x << ", " << bottomBasePoints[i].y << ", " << bottomBasePoints[i].z << ")\n\n";
 			//<< "\ncurrent angle = " << tempAngle << "\n\n";
@@ -499,16 +507,22 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	// then temp vector to keep track of where in (x,y) to put next point
 	//vector2 temp(a_fRadius, 0.0f);
 
+	// floats to keep track of z-values of top and bottom
+	float topZ = 0.0f;
+	topZ = a_fHeight;
+	float bottomZ = a_fHeight;
+	bottomZ = -topZ;
+
 	// array points
-	std::vector<vector3> topOuterRadiusPoints = GenerateCircleOfPoints(a_fOuterRadius, a_nSubdivisions, angle, 0.0f);
-	std::vector<vector3> topInnerRadiusPoints = GenerateCircleOfPoints(a_fInnerRadius, a_nSubdivisions, angle, 0.0f);
+	std::vector<vector3> topOuterRadiusPoints = GenerateCircleOfPoints(a_fOuterRadius, a_nSubdivisions, angle, topZ);
+	std::vector<vector3> topInnerRadiusPoints = GenerateCircleOfPoints(a_fInnerRadius, a_nSubdivisions, angle, topZ);
 
 	std::vector<vector3> bottomOuterRadiusPoints(a_nSubdivisions);
 	std::vector<vector3> bottomInnerRadiusPoints(a_nSubdivisions);
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
-		bottomOuterRadiusPoints[i] = vector3(topOuterRadiusPoints[i].x, topOuterRadiusPoints[i].y, a_fHeight);
-		bottomInnerRadiusPoints[i] = vector3(topInnerRadiusPoints[i].x, topInnerRadiusPoints[i].y, a_fHeight);
+		bottomOuterRadiusPoints[i] = vector3(topOuterRadiusPoints[i].x, topOuterRadiusPoints[i].y, bottomZ);
+		bottomInnerRadiusPoints[i] = vector3(topInnerRadiusPoints[i].x, topInnerRadiusPoints[i].y, bottomZ);
 	}
 
 	// draw each face, remember BOTH SIDES
@@ -708,8 +722,10 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	// an alternate approach
 	// a separate loop for the middle faces that only executes once
+	/*
 	if (size == 2)
 	{
+		//std::cout << size - 1 << "\n";
 		for (int i = 0; i < a_nSubdivisions; i++)
 		{
 			int next = i + 1;
@@ -720,8 +736,9 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 			AddQuad(rings[1][next], rings[1][i], rings[0][next], rings[0][i]);
 		}
 	}
-	else
-	{
+	//*/
+	//else
+	//{
 		for (int i = 0; i < size - 1; i++)
 		{
 			int nextI = i + 1;
@@ -741,7 +758,7 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 				AddQuad(rings[nextI][nextJ], rings[nextI][j], rings[i][nextJ], rings[i][j]);
 			}
 		}
-	}
+	//}
 
 	// THIS IS GOLDEN CONCEPTUALLY, LEAVE IT COMMENTED OUT
 	// BUT, DO NOT REMOVE THIS BLOCK OF CODE UNTIL 100% DONE
