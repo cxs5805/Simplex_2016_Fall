@@ -73,14 +73,27 @@ void Application::Display(void)
 								0.0f, fAnimationLasts,
 								0.0f, 1.0f);
 								//m_stopsList[0], m_stopsList[1]);
-	v3CurrentPos = glm::lerp(m_stopsList[0], m_stopsList[1], fPercent);
+	//v3CurrentPos = glm::lerp(m_stopsList[0], m_stopsList[1], fPercent);
+	v3CurrentPos = glm::lerp(m_stopsList[index], m_stopsList[next], fPercent);
 
 	if (fPercent > 1.0f)
 	{
+		// restart clock and dt
 		uClock = m_pSystem->GenClock();
+		fTimer = 0;
+
 		index++;
 		next++;
-		if (next == numStops) next = 0;
+		if (next == numStops)
+		{
+			index = numStops - 1;
+			next = 0;
+		}
+		if (next == 1)
+			index = 0;
+
+		// DEBUG
+		//std::cout << "index = " << index << ", next = " << next << "\n";
 	}
 
 	//-------------------
