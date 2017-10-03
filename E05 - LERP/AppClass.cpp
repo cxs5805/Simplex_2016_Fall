@@ -53,6 +53,7 @@ void Application::Display(void)
 	static float fTimer = 0;	//store the new timer
 	static uint uClock = m_pSystem->GenClock(); //generate a new clock for that timer
 	fTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
+	// DON'T CHANGE
 
 	//calculate the current position
 	vector3 v3CurrentPos;
@@ -62,7 +63,26 @@ void Application::Display(void)
 
 
 	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+	static uint index = 0;
+	static uint next = 1;
+	static int numStops = m_stopsList.size();
+
+	//v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+	float fAnimationLasts = 2.0f;
+	float fPercent = MapValue(	fTimer,
+								0.0f, fAnimationLasts,
+								0.0f, 1.0f);
+								//m_stopsList[0], m_stopsList[1]);
+	v3CurrentPos = glm::lerp(m_stopsList[0], m_stopsList[1], fPercent);
+
+	if (fPercent > 1.0f)
+	{
+		uClock = m_pSystem->GenClock();
+		index++;
+		next++;
+		if (next == numStops) next = 0;
+	}
+
 	//-------------------
 	
 
