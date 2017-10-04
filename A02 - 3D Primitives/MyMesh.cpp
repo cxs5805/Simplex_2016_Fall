@@ -275,10 +275,6 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Release();
 	Init();
 
-	// Replace this with your code
-	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
-
-	//*
 	// pointy point
 	float pointZ = 0.0f;
 	pointZ = a_fHeight / 2;
@@ -291,7 +287,7 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 
 	// first, angle
 	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
-	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+	//std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
 
 	// next, temp angle to increment as we go thru loop without
 	// having to override or recall the original angle value
@@ -311,42 +307,12 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 		if (i == a_nSubdivisions - 1)
 			next = 0;
 
-		// base, both sides
-		AddTri(basePoints[i], basePoints[next], center);
+		// base
 		AddTri(basePoints[next], basePoints[i], center);
 
-		// coney pointy part, both sides
+		// coney pointy part
 		AddTri(basePoints[i], basePoints[next], point);
-		AddTri(basePoints[next], basePoints[i], point);
 	}
-
-	// loop for each subdivision
-	//for (int i = 0; i < a_nSubdivisions; i++)
-	//{
-	//	// set point based on current directional vector
-	//	basePoints[i] = vector3(temp, a_fHeight);
-	//
-	//	// DEBUG
-	//	std::cout << "(" << basePoints[i].x << ", " << basePoints[i].y << ", " << basePoints[i].z << ")"
-	//		<< "\ncurrent angle = " << tempAngle << "\n\n";
-	//	
-	//	// increment directional vector by angle
-	//	// but, how?
-	//	//temp = vector2(glm::cos(basePoints[i].x), glm::sin(basePoints[i].y));
-	//	//if (i == 0);
-	//
-	//	// here's a thought
-	//	// set the temp = radius * (cos(angle), sin(angle));
-	//	temp = a_fRadius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
-	//	// increment current angle by original angle amount for a uniform increment
-	//	tempAngle += angle;
-	//
-	//	// what I'm doing now, (not working)
-	//	//temp = vector2(glm::sin(temp.x / a_fRadius), glm::cos(temp.y / a_fRadius));
-	//	// else temp = vector
-	//}
-	//*/
-
 	// -------------------------------
 
 	// Adding information about color
@@ -369,10 +335,6 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
-	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	
-	//*
 	// center point on top
 	float centerTopZ = 0.0f;
 	centerTopZ = a_fHeight / 2;
@@ -385,7 +347,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 
 	// first, angle
 	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
-	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+	//std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
 
 	// next, temp angle to increment as we go thru loop without
 	// having to override or recall the original angle value
@@ -397,32 +359,6 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	// array points
 	std::vector<vector3> topBasePoints = GenerateCircleOfPoints(a_fRadius, a_nSubdivisions, angle, centerTopZ);
 
-	// loop for each subdivision
-	//for (int i = 0; i < a_nSubdivisions; i++)
-	//{
-	//	// set point based on current directional vector
-	//	topBasePoints[i] = vector3(temp, 0);
-	//
-	//	// DEBUG
-	//	std::cout << "(" << topBasePoints[i].x << ", " << topBasePoints[i].y << ", " << topBasePoints[i].z << ")"
-	//		<< "\ncurrent angle = " << tempAngle << "\n\n";
-	//
-	//	// increment directional vector by angle
-	//	// but, how?
-	//	//temp = vector2(glm::cos(topBasePoints[i].x), glm::sin(topBasePoints[i].y));
-	//	//if (i == 0);
-	//
-	//	// here's a thought
-	//	// set the temp = radius * (cos(angle), sin(angle));
-	//	temp = a_fRadius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
-	//	// increment current angle by original angle amount for a uniform increment
-	//	tempAngle += angle;
-	//
-	//	// what I'm doing now, (not working)
-	//	//temp = vector2(glm::sin(temp.x / a_fRadius), glm::cos(temp.y / a_fRadius));
-	//	// else temp = vector
-	//}
-
 	// array points
 	std::vector<vector3> bottomBasePoints(a_nSubdivisions);
 
@@ -432,11 +368,9 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		// set x and y based on top base points, then set z to height (top z = 0 for all points)
 		bottomBasePoints[i] = vector3(topBasePoints[i].x, topBasePoints[i].y, centerBottomZ);
 		// DEBUG
-		std::cout << "(" << bottomBasePoints[i].x << ", " << bottomBasePoints[i].y << ", " << bottomBasePoints[i].z << ")\n\n";
+		//std::cout << "(" << bottomBasePoints[i].x << ", " << bottomBasePoints[i].y << ", " << bottomBasePoints[i].z << ")\n\n";
 			//<< "\ncurrent angle = " << tempAngle << "\n\n";
 	}
-	//*/
-
 
 	// draw each face, remember BOTH SIDES
 	for (int i = 0; i < a_nSubdivisions; i++)
@@ -445,19 +379,15 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		if (i == a_nSubdivisions - 1)
 			next = 0;
 
-		// top base, both sides
+		// top base
 		AddTri(topBasePoints[i], topBasePoints[next], centerTop);
-		AddTri(topBasePoints[next], topBasePoints[i], centerTop);
 
 		// middle portion
 		AddQuad(bottomBasePoints[i], bottomBasePoints[next], topBasePoints[i], topBasePoints[next]);
-		AddQuad(bottomBasePoints[next], bottomBasePoints[i], topBasePoints[next], topBasePoints[i]);
 
-		// bottom base, both sides
-		AddTri(bottomBasePoints[i], bottomBasePoints[next], centerBottom);
+		// bottom base
 		AddTri(bottomBasePoints[next], bottomBasePoints[i], centerBottom);
 	}
-
 	// -------------------------------
 
 	// Adding information about color
@@ -486,26 +416,9 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
-	// Replace this with your code
-	//GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	//*
-	// center point on top
-	//vector3 centerTop(0.0f, 0.0f, 0.0f);
-
-	// center point on flat end of cylinder
-	//vector3 centerBottom(centerTop.x, centerTop.y, a_fHeight);
-
 	// first, angle
 	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
-	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
-
-	// next, temp angle to increment as we go thru loop without
-	// having to override or recall the original angle value
-	//float tempOuterAngle = angle;
-	//float tempInnerAngle = angle;
-
-	// then temp vector to keep track of where in (x,y) to put next point
-	//vector2 temp(a_fRadius, 0.0f);
+	//std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
 
 	// floats to keep track of z-values of top and bottom
 	float topZ = 0.0f;
@@ -532,23 +445,18 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 		if (i == a_nSubdivisions - 1)
 			next = 0;
 
-		// top ring, both sides
+		// top ring
 		AddQuad(topOuterRadiusPoints[i], topOuterRadiusPoints[next], topInnerRadiusPoints[i], topInnerRadiusPoints[next]);
-		AddQuad(topOuterRadiusPoints[next], topOuterRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
 
 		// outer middle
 		AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], topOuterRadiusPoints[i], topOuterRadiusPoints[next]);
-		AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], topOuterRadiusPoints[next], topOuterRadiusPoints[i]);
 
 		// inner middle
-		AddQuad(bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next], topInnerRadiusPoints[i], topInnerRadiusPoints[next]);
 		AddQuad(bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
 
-		// bottom ring, both sides
-		AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next]);
+		// bottom ring
 		AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i]);
 	}
-
 	// -------------------------------
 
 	// Adding information about color
@@ -604,9 +512,6 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Release();
 	Init();
 
-	// Replace this with your code
-	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
-
 	// center top
 	vector3 centerTop(0.0f, 0.0f, a_fRadius);
 
@@ -615,18 +520,17 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	// angle of horizontal increment (for a ring of points at a given height)
 	float angle = (2 * glm::pi<float>()) / a_nSubdivisions;
-	std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
+	//std::cout << "subdivisions = " << a_nSubdivisions << ", angle = " << angle << ", 2 * pi = " << angle * a_nSubdivisions << ", pi = " << glm::pi<float>() << "\n";
 
 	// angle of vertical increment
 	float vertAngle = glm::pi<float>() / a_nSubdivisions;
-	std::cout << "vertical angle = " << vertAngle << ", pi = " << vertAngle * a_nSubdivisions << "\n";
+	//std::cout << "vertical angle = " << vertAngle << ", pi = " << vertAngle * a_nSubdivisions << "\n";
 
 	// temp angle for iterating thru the rings
 	// this goes from 0 to pi, rather than 0 to 2pi like the temp angle in GenerateCircleOfPoints
 	float tempVertAngle = vertAngle;
 	
 	// temps to keep track of radius and height at which to generate a new ring
-	//vector2 temp(0.0f, 0.0f);
 	float tempRadius = 0.0f;
 	float tempHeight = 0.0f;
 
@@ -634,19 +538,18 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	std::vector<std::vector<vector3>> rings(a_nSubdivisions - 1);
 
 	// DEBUG
-	std::cout << "ABOUT TO ENTER RING LOOP\ncurrent radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
+	//std::cout << "ABOUT TO ENTER RING LOOP\ncurrent radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
 
 	// you may need to make the # of iterations (subdivisions - 1) if the last ring is at the height of centerBottom
 	for (int i = 0; i < a_nSubdivisions - 1; i++)
 	{
 		// update the radius and height 
 		// this gets done first so that the first ring isn't at the same height as the center top
-		//temp = vector2();
 		tempRadius = a_fRadius * glm::sin(tempVertAngle);
-		tempHeight = (a_fRadius * glm::cos(tempVertAngle));// +(a_fRadius / 2);
+		tempHeight = (a_fRadius * glm::cos(tempVertAngle));
 
 		// DEBUG
-		std::cout << "current radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
+		//std::cout << "current radius = " << tempRadius << "\ncurrent height = " << tempHeight << "\ncurrent angle = " << tempVertAngle << "\n\n";
 
 		// generate a circle of points at the current radius and height
 		rings[i] = GenerateCircleOfPoints(tempRadius, a_nSubdivisions, angle, tempHeight);
@@ -658,123 +561,39 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	int size = rings.size();
 	bool middleDone = false;
 	// now, draw points!
-	// draw each face, remember BOTH SIDES
+	// draw each base face
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		int nextI = i + 1;
 		if (i == a_nSubdivisions - 1)
 			nextI = 0;
 
-		// top base, both sides
+		// top base
 		AddTri(rings[0][i], rings[0][nextI], centerTop);
-		AddTri(rings[0][nextI], rings[0][i], centerTop);
-		//AddQuad(topOuterRadiusPoints[next], topOuterRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
 
-		// special case: 3 subdivisions and therefore 2 rings
-		if (size == 2)
-		{
-			std::cout << "size is 2!\n";
-		}
-
-		if (!middleDone && size > 2)
-		{
-			/*
-			// THIS ONLY DOES ONE FACE!!!!
-			// loop for each middle ring, both sides
-			for (int j = 0; j < size - 1; j++)
-			{
-				int nextJ = j + 1;
-				if (j == size - 1)
-					nextJ = 0;
-
-				AddQuad(rings[i + 1][j], rings[i + 1][nextJ], rings[i][j], rings[i][nextJ]);
-				AddQuad(rings[i + 1][nextJ], rings[i + 1][j], rings[i][nextJ], rings[i][j]);
-			}
-			middleDone = true;
-			//*/
-		}
-		/*
-		// loop for each middle ring, both sides
-		for (int j = 0; j < size - 1; j++)
-		{
-			int nextJ = j + 1;
-			if (j == size - 1)
-				nextJ = 0;
-
-			AddQuad(rings[i + 1][j], rings[i + 1][nextJ], rings[i][j], rings[i][nextJ]);
-			AddQuad(rings[i + 1][nextJ], rings[i + 1][j], rings[i][nextJ], rings[i][j]);
-		}
-		//*/
-		// outer middle
-		//AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], topOuterRadiusPoints[i], topOuterRadiusPoints[next]);
-		//AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], topOuterRadiusPoints[next], topOuterRadiusPoints[i]);
-
-		// inner middle
-		//AddQuad(bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next], topInnerRadiusPoints[i], topInnerRadiusPoints[next]);
-		//AddQuad(bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i], topInnerRadiusPoints[next], topInnerRadiusPoints[i]);
-
-		// bottom base, both sides
+		// bottom base
 		AddTri(rings[size - 1][nextI], rings[size - 1][i], centerBottom);
-		AddTri(rings[size - 1][i], rings[size - 1][nextI], centerBottom);
-		//AddQuad(bottomOuterRadiusPoints[i], bottomOuterRadiusPoints[next], bottomInnerRadiusPoints[i], bottomInnerRadiusPoints[next]);
-		//AddQuad(bottomOuterRadiusPoints[next], bottomOuterRadiusPoints[i], bottomInnerRadiusPoints[next], bottomInnerRadiusPoints[i]);
 	}
 
 	// an alternate approach
 	// a separate loop for the middle faces that only executes once
-	/*
-	if (size == 2)
+	for (int i = 0; i < size - 1; i++)
 	{
-		//std::cout << size - 1 << "\n";
-		for (int i = 0; i < a_nSubdivisions; i++)
-		{
-			int next = i + 1;
-			if (i == a_nSubdivisions - 1)
-				next = 0;
+		int nextI = i + 1;
 
-			AddQuad(rings[1][i], rings[1][next], rings[0][i], rings[0][next]);
-			AddQuad(rings[1][next], rings[1][i], rings[0][next], rings[0][i]);
+		for (int j = 0; j < a_nSubdivisions; j++)
+		{
+			int nextJ = j + 1;
+			if (j == a_nSubdivisions - 1)
+				nextJ = 0;
+
+			// DEBUG
+			//std::cout << "now, do both sides of rings[" << nextI << "][" << j << "] and rings[" << i << "][" << nextJ << "]\n";
+			
+			// middle faces
+			AddQuad(rings[nextI][j], rings[nextI][nextJ], rings[i][j], rings[i][nextJ]);
 		}
 	}
-	//*/
-	//else
-	//{
-		for (int i = 0; i < size - 1; i++)
-		{
-			int nextI = i + 1;
-			//if (i == a_nSubdivisions - 1)
-			//	nextI = 0;
-
-			for (int j = 0; j < a_nSubdivisions; j++)
-			{
-				int nextJ = j + 1;
-				if (j == a_nSubdivisions - 1)
-					nextJ = 0;
-
-				std::cout << "now, do both sides of rings[" << nextI << "][" << j << "] and rings[" << i << "][" << nextJ << "]\n";
-				
-				// this is the hard part
-				AddQuad(rings[nextI][j], rings[nextI][nextJ], rings[i][j], rings[i][nextJ]);
-				AddQuad(rings[nextI][nextJ], rings[nextI][j], rings[i][nextJ], rings[i][j]);
-			}
-		}
-	//}
-
-	// THIS IS GOLDEN CONCEPTUALLY, LEAVE IT COMMENTED OUT
-	// BUT, DO NOT REMOVE THIS BLOCK OF CODE UNTIL 100% DONE
-	// When a_nSubdivisions == 3, this works perfectly!
-	// but for a_nSubdivisions >= 4, it only draws one ring of faces
-	/*
-	for (int i = 0; i < a_nSubdivisions; i++)
-	{
-		int next = i + 1;
-		if (i == a_nSubdivisions - 1)
-			next = 0;
-
-		AddQuad(rings[1][i], rings[1][next], rings[0][i], rings[0][next]);
-		AddQuad(rings[1][next], rings[1][i], rings[0][next], rings[0][i]);
-	}
-	//*/
 	// -------------------------------
 
 	// Adding information about color
@@ -795,40 +614,12 @@ std::vector<vector3> MyMesh::GenerateCircleOfPoints(float radius, float numSubdi
 		circleOfPoints[i] = vector3(temp, zValue);
 
 		// DEBUG
-		std::cout << "(" << circleOfPoints[i].x << ", " << circleOfPoints[i].y << ", " << circleOfPoints[i].z << ")"
-			<< "\ncurrent angle = " << tempAngle << "\n\n";
+		//std::cout << "(" << circleOfPoints[i].x << ", " << circleOfPoints[i].y << ", " << circleOfPoints[i].z << ")"
+		//	<< "\ncurrent angle = " << tempAngle << "\n\n";
 
 		temp = radius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
 		tempAngle += angle;
 	}
-
-	/*
-	// loop for each subdivision
-	for (int i = 0; i < a_nSubdivisions; i++)
-	{
-		// set point based on current directional vector
-		basePoints[i] = vector3(temp, a_fHeight);
-
-		// DEBUG
-		std::cout << "(" << basePoints[i].x << ", " << basePoints[i].y << ", " << basePoints[i].z << ")"
-			<< "\ncurrent angle = " << tempAngle << "\n\n";
-		
-		// increment directional vector by angle
-		// but, how?
-		//temp = vector2(glm::cos(basePoints[i].x), glm::sin(basePoints[i].y));
-		//if (i == 0);
-
-		// here's a thought
-		// set the temp = radius * (cos(angle), sin(angle));
-		temp = a_fRadius * vector2(glm::cos(tempAngle), glm::sin(tempAngle));
-		// increment current angle by original angle amount for a uniform increment
-		tempAngle += angle;
-
-		// what I'm doing now, (not working)
-		//temp = vector2(glm::sin(temp.x / a_fRadius), glm::cos(temp.y / a_fRadius));
-		// else temp = vector
-	}
-	*/
 
 	return circleOfPoints;
 }
