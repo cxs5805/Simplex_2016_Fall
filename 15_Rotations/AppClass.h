@@ -16,6 +16,11 @@ class Application
 {
 	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
 	MyMesh* m_pMesh = nullptr;
+	
+	//vector3 m_v3Orientation;
+
+	// quat representations of cone's orientation
+	quaternion m_qOrientation;
 
 private:
 	static ImGuiObject gui; //GUI object

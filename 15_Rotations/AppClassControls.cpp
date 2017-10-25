@@ -414,6 +414,33 @@ void Application::ProcessKeyboard(void)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		m_pCameraMngr->MoveVertical(fSpeed);
 #pragma endregion
+
+	// rotations in DEGREES
+	float rotAngle = 1.0f;
+
+	// hold shift to rotate the other way
+	if (fMultiplier) rotAngle *= -1.0f;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+	{
+		//m_pCameraMngr->MoveForward(rotAngle);
+		// quaternion representing current angle of rotation
+		quaternion q = glm::angleAxis(rotAngle, AXIS_X);
+		m_qOrientation = m_qOrientation * q;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+	{
+		//m_pCameraMngr->MoveForward(rotAngle);
+		quaternion q = glm::angleAxis(rotAngle, AXIS_Y);
+		m_qOrientation = m_qOrientation * q;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	{
+		//m_pCameraMngr->MoveForward(rotAngle);
+		quaternion q = glm::angleAxis(rotAngle, AXIS_Z);
+		m_qOrientation = m_qOrientation * q;
+	}
 }
 //Joystick
 void Application::ProcessJoystick(void)

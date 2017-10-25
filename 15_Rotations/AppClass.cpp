@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	////Change this to your name and email
-	//m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Chris Schiff - cxs5805@g.rit.edu";
 
 	////Alberto needed this at this position for software recording.
 	//m_pWindow->setPosition(sf::Vector2i(710, 0));
@@ -37,12 +37,30 @@ void Application::Display(void)
 	//Get a timer
 	static uint uClock = m_pSystem->GenClock();
 	float fTimer = m_pSystem->GetTimeSinceStart(uClock);
+	float dt = m_pSystem->GetDeltaTime(uClock);
 
 	//calculate the current position
-	matrix4 m4Rotation = glm::rotate(IDENTITY_M4, fTimer * 60.0f, vector3(0.0f, 0.0f, 1.0f));
-	matrix4 m4Model;
-	for (uint i = 0; i < 2500; ++i)
-		m4Model = m4Rotation * glm::translate(IDENTITY_M4, vector3(2.5f, 0.0f, 0.0f)) * glm::transpose(m4Rotation);
+	static matrix4 m4Model;
+	
+	/*
+	static bool flag = true;
+	if (flag)
+	{
+		flag = false;
+		std::cout << "(" << m_v3Orientation.x << ", " << m_v3Orientation.y << ", " << m_v3Orientation.z << ")\n";
+	}
+	//*/
+
+	//m_vOrientation = vector3(1,0,0);
+	//matrix4 m4Rotation = glm::rotate(IDENTITY_M4, fTimer * 60.0f, vector3(0.0f, 0.0f, 1.0f));
+	//matrix4 m4Rotation = glm::rotate(m4Model, fTimer * 60.0f, vector3(0.0f, 0.0f, 1.0f));
+	//m4Model = m4Rotation;
+
+	// by this point, the orientation quat will have been changed based on KB input
+	m4Model = glm::toMat4(m_qOrientation);
+
+	//for (uint i = 0; i < 2500; ++i)
+	//	m4Model = m4Rotation * glm::translate(IDENTITY_M4, vector3(2.5f, 0.0f, 0.0f)) * glm::transpose(m4Rotation);
 	
 	/*
 	//extra part, how to rotate around a point (in this case the base of the cone)
