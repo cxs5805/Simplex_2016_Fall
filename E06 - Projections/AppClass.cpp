@@ -48,30 +48,39 @@ void Application::Display(void)
 	//draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
 
+	// DEBUG: get camera position
+	//vector3 pos = m_pCamera->GetPosition();
+
 	//calculate view and projection
 	switch (m_uProjection)
 	{
 	default:
 	case 1:
 		m_pCamera->ResetCamera();
+		//std::cout << "(" << m_pCamera->GetPosition().x << ", " << m_pCamera->GetPosition().y << "," << m_pCamera->GetPosition().z << ")\n";
 		break;
 	case 2:
-		m_pCamera->ResetCamera();
+		//m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(false);
 		break;
 	case 3:
-		m_pCamera->ResetCamera();
+		//m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective();
+		m_pCamera->SetUp(AXIS_X);
 		break;
 	case 4:
-		m_pCamera->ResetCamera();
+		//m_pCamera->ResetCamera();
 		break;
 	case 5:
-		m_pCamera->ResetCamera();
+		//m_pCamera->ResetCamera();
 		break;
 	case 6:
-		m_pCamera->ResetCamera();
+		//m_pCamera->ResetCamera();
 		break;
 	case 7:
-		m_pCamera->ResetCamera();
+		//m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective();
+		m_pCamera->SetUp(vector3(0.0f, -1.0f, 0.0f));
 		break;
 	}
 

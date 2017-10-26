@@ -441,6 +441,16 @@ void Application::ProcessKeyboard(void)
 		quaternion q = glm::angleAxis(rotAngle, AXIS_Z);
 		m_qOrientation = m_qOrientation * q;
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+	{
+		//m_pCameraMngr->MoveForward(rotAngle);
+		// reset current quaternion to identity
+		//quaternion q = glm::angleAxis(rotAngle, AXIS_Z);
+		//m_qOrientation = m_qOrientation * q;
+		m_qOrientation = IDENTITY_QUAT;
+	}
+
+	
 }
 //Joystick
 void Application::ProcessJoystick(void)
