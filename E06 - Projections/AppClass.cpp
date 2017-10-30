@@ -49,7 +49,13 @@ void Application::Display(void)
 	m_pMeshMngr->AddSkyboxToRenderList();
 
 	// DEBUG: get camera position
-	//vector3 pos = m_pCamera->GetPosition();
+	vector3 pos = m_pCamera->GetPosition();
+	//vector3 up = m_pCamera->GetUp();
+	//vector3 target = m_pCamera->GetTarget();
+
+	std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")\n";
+	//std::cout << "(" << up.x << ", " << up.y << ", " << up.z << ")\n";
+	//std::cout << "(" << target.x << ", " << target.y << ", " << target.z << ")\n";
 
 	//calculate view and projection
 	switch (m_uProjection)
@@ -57,28 +63,59 @@ void Application::Display(void)
 	default:
 	case 1:
 		m_pCamera->ResetCamera();
-		//std::cout << "(" << m_pCamera->GetPosition().x << ", " << m_pCamera->GetPosition().y << "," << m_pCamera->GetPosition().z << ")\n";
+		//m_pCamera->SetPosition(vector3(0.0f, 0.0f, 0.0001f));
 		break;
 	case 2:
-		//m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();
 		m_pCamera->SetPerspective(false);
 		break;
 	case 3:
-		//m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();
 		m_pCamera->SetPerspective();
-		m_pCamera->SetUp(AXIS_X);
+
+		// brainstorming
+		// these settings seem ok (if next doesn't work just stick with this)
+		//m_pCamera->SetPosition(vector3(20.0f, 0.0f, -10.0f));
+		//m_pCamera->SetTarget(vector3(0.0f, 0.0f, -5.0f));
+		//
+		//m_pCamera->SetPosition(vector3(0.0f, 0.0f, -6.0f));
+		//m_pCamera->SetTarget(vector3(0.0f, 0.0f, -5.0f));
+		//
+		//// looks at green torus from middle
+		//m_pCamera->SetPosition(vector3(0.001f, 0.001f, -5.0f));
+		//m_pCamera->SetTarget(vector3(0.0f, 0.0f, -5.0f));
+		//
+		//// looks at green torus from out
+		//m_pCamera->SetPosition(vector3(20.001f, 0.001f, -5.0f));
+		//m_pCamera->SetTarget(vector3(0.0f, 0.0f, -5.0f));
+
+		// looks at red torus from out
+		m_pCamera->SetPosition(vector3(30.001f, 0.001f, 0.0f));
+		m_pCamera->SetTarget(vector3(0.0f, 0.0f, 0.0f));
+
+
+		// only apply this last
+		m_pCamera->SetUp(vector3(0.0f, 0.0f, -1.0f));
 		break;
 	case 4:
-		//m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
 		break;
 	case 5:
-		//m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
+		m_pCamera->SetNearFar(vector2(5.0f, 1000.0f));
 		break;
 	case 6:
-		//m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
+		m_pCamera->SetNearFar(vector2(0.001f, 13.0f));
 		break;
 	case 7:
-		//m_pCamera->ResetCamera();
+		m_pCamera->ResetCamera();
 		m_pCamera->SetPerspective();
 		m_pCamera->SetUp(vector3(0.0f, -1.0f, 0.0f));
 		break;
