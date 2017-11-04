@@ -26,6 +26,11 @@ class MyCamera
 	vector3 m_v3MyUp = vector3(0.0f, 1.0f, 0.0f);
 	//m_v3Position + vector3(0.0f, 1.0f, 0.0f); // and up?
 
+	// though this isn't used for calculating the view matrix,
+	// the following vector3 should still be able to help w/
+	// recalculating the forward and right (and maybe up vectors)
+	vector3 m_v3OrientationAngles;
+
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
 	float m_fFOV = 45.0f; //Field of View
@@ -151,6 +156,9 @@ public:
 
 	void SetMyUp(vector3 a_v3MyUp);
 	vector3 GetMyUp(void);
+
+	void SetOrientationAngles(vector3 a_v3OrientationAngles);
+	vector3 GetOrientationAngles(void);
 
 	/*
 	USAGE: Sets Perspective Camera

@@ -23,6 +23,9 @@ vector3 Simplex::MyCamera::GetMyRight(void) { return m_v3MyRight; }
 void Simplex::MyCamera::SetMyUp(vector3 a_v3MyUp) { m_v3MyUp = a_v3MyUp; }
 vector3 Simplex::MyCamera::GetMyUp(void) { return m_v3MyUp; }
 
+void Simplex::MyCamera::SetOrientationAngles(vector3 a_v3OrientationAngles) { m_v3OrientationAngles = a_v3OrientationAngles; }
+vector3 Simplex::MyCamera::GetOrientationAngles(void) { return m_v3OrientationAngles; }
+
 void Simplex::MyCamera::SetPerspective(bool a_bPerspective) { m_bPerspective = a_bPerspective; }
 
 void Simplex::MyCamera::SetFOV(float a_fFOV) { m_fFOV = a_fFOV; }
@@ -127,6 +130,12 @@ void Simplex::MyCamera::ResetCamera(void)
 	m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
 	m_qOrientation = IDENTITY_QUAT; // camera's orientation
+
+	m_v3MyForward = vector3(0.0f, 0.0f, -1.0f);
+	m_v3MyRight = vector3(1.0f, 0.0f, 0.0f);
+	m_v3MyUp = vector3(0.0f, 1.0f, 0.0f);
+
+	m_v3OrientationAngles = vector3(0.0f, 0.0f, 0.0f);// reset the orientation angles
 
 	m_bPerspective = true; //perspective view? False is Orthographic
 
