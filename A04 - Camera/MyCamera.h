@@ -16,6 +16,16 @@ class MyCamera
 	vector3 m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	vector3 m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
+	quaternion m_qOrientation; // camera's orientation
+
+	// what point is to the camera's...
+	vector3 m_v3MyForward = vector3(0.0f, 0.0f, -1.0f);
+	// m_v3Position + vector3(0.0f, 0.0f, -1.0f); // forward
+	vector3 m_v3MyRight = vector3(1.0f, 0.0f, 0.0f);
+	//m_v3Position + vector3(1.0f, 0.0f, 0.0f); // right 
+	vector3 m_v3MyUp = vector3(0.0f, 1.0f, 0.0f);
+	//m_v3Position + vector3(0.0f, 1.0f, 0.0f); // and up?
+
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
 	float m_fFOV = 45.0f; //Field of View
@@ -129,6 +139,18 @@ public:
 	OUTPUT: position of the camera
 	*/
 	vector3 GetUp(void);
+
+	void SetOrientation(quaternion a_qOrientation);
+	quaternion GetOrientation(void);
+
+	void SetMyForward(vector3 a_v3MyForward);
+	vector3 GetMyForward(void);
+
+	void SetMyRight(vector3 a_v3MyRight);
+	vector3 GetMyRight(void);
+
+	void SetMyUp(vector3 a_v3MyUp);
+	vector3 GetMyUp(void);
 
 	/*
 	USAGE: Sets Perspective Camera

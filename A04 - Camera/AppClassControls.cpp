@@ -378,6 +378,13 @@ void Application::ProcessKeyboard(void)
 	This is used for things that are continuously happening,
 	for discreet on/off use ProcessKeyboardPressed/Released
 	*/
+
+	// reset camera
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+	{
+		m_pCamera->ResetCamera();
+	}
+
 #pragma region Camera Position
 	float fSpeed = 0.1f;
 	float fMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
@@ -385,6 +392,93 @@ void Application::ProcessKeyboard(void)
 
 	if (fMultiplier)
 		fSpeed *= 5.0f;
+
+	// test everything in global space just to see what's really going on
+	// first things first, what happens when view matrix gets updated every frame (already happens)
+
+	// next, let's just move the camera in X and Z
+	vector3 v3Temp;
+
+	// move forwards
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		//v3Temp += fSpeed * vector3(0.0f, 0.0f, -1.0f);
+		v3Temp += fSpeed * m_pCamera->GetMyForward();
+	}
+
+	// move backwards
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		//v3Temp += fSpeed * vector3(0.0f, 0.0f, 1.0f);
+		v3Temp -= fSpeed * m_pCamera->GetMyForward();
+	}
+
+	// move left
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		//v3Temp += fSpeed * vector3(-1.0f, 0.0f, 0.0f);
+		v3Temp -= fSpeed * m_pCamera->GetMyRight();
+	}
+
+	// move right
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		//v3Temp += fSpeed * vector3(1.0f, 0.0f, 0.0f);
+		v3Temp += fSpeed * m_pCamera->GetMyRight();
+	}
+
+	// now, update position!
+	vector3 v3OldPosition = m_pCamera->GetPosition();
+	m_pCamera->SetPosition(v3OldPosition + v3Temp);
+
+	// on every frame, set target to position + my forward
+	vector3 v3NewTarget = m_pCamera->GetPosition() + m_pCamera->GetMyForward();
+	m_pCamera->SetTarget(v3NewTarget);
+#pragma endregion
+
+#pragma region Camera Orientation
+	// angle in DEGREES
+	float fAngle = 1.0f;
+
+	// hold shift to change direction
+	// won't be needed after it's done via mouse controls
+	if (fMultiplier)
+		fAngle = -fAngle;
+
+	// future me, what are we going to rotate about?
+	// as of Friday it's about global X and global Y,
+	// but that doesn't seem to be what we want
+
+	// rotate X
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+	{
+		std::cout << "rotate X\n";
+
+		// get the rotation
+		vector3 axis = AXIS_X;
+		axis = m_pCamera->GetMyRight();
+		quaternion qTemp = glm::angleAxis(fAngle, axis);
+
+		// multiply it by existing orientation
+		m_pCamera->SetOrientation(m_pCamera->GetOrientation() * qTemp);
+	}
+
+	// rotate Y
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+	{
+		std::cout << "rotate Y\n";
+
+		// get the rotation
+		vector3 axis = AXIS_Y;
+		axis = m_pCamera->GetMyUp();
+		quaternion qTemp = glm::angleAxis(fAngle, axis);
+
+		// multiply it by existing orientation
+		m_pCamera->SetOrientation(m_pCamera->GetOrientation() * qTemp);
+	}
+
+	// assignment doesn't require rotation in Z
+
 #pragma endregion
 }
 //Joystick

@@ -3,10 +3,25 @@ using namespace Simplex;
 
 //Accessors
 void Simplex::MyCamera::SetPosition(vector3 a_v3Position) { m_v3Position = a_v3Position; }
+vector3 Simplex::MyCamera::GetPosition(void) { return m_v3Position; }
 
 void Simplex::MyCamera::SetTarget(vector3 a_v3Target) { m_v3Target = a_v3Target; }
+vector3 Simplex::MyCamera::GetTarget(void) { return m_v3Target; }
 
 void Simplex::MyCamera::SetUp(vector3 a_v3Up) { m_v3Up = a_v3Up; }
+vector3 Simplex::MyCamera::GetUp(void) { return m_v3Up; }
+
+void Simplex::MyCamera::SetOrientation(quaternion a_qOrientation) { m_qOrientation = a_qOrientation; }
+quaternion Simplex::MyCamera::GetOrientation(void) { return m_qOrientation; }
+
+void Simplex::MyCamera::SetMyForward(vector3 a_v3MyForward) { m_v3MyForward = a_v3MyForward; }
+vector3 Simplex::MyCamera::GetMyForward(void) { return m_v3MyForward; }
+
+void Simplex::MyCamera::SetMyRight(vector3 a_v3MyRight) { m_v3MyRight = a_v3MyRight; }
+vector3 Simplex::MyCamera::GetMyRight(void) { return m_v3MyRight; }
+
+void Simplex::MyCamera::SetMyUp(vector3 a_v3MyUp) { m_v3MyUp = a_v3MyUp; }
+vector3 Simplex::MyCamera::GetMyUp(void) { return m_v3MyUp; }
 
 void Simplex::MyCamera::SetPerspective(bool a_bPerspective) { m_bPerspective = a_bPerspective; }
 
@@ -111,6 +126,8 @@ void Simplex::MyCamera::ResetCamera(void)
 	m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
+	m_qOrientation = IDENTITY_QUAT; // camera's orientation
+
 	m_bPerspective = true; //perspective view? False is Orthographic
 
 	m_fFOV = 45.0f; //Field of View
@@ -127,6 +144,12 @@ void Simplex::MyCamera::ResetCamera(void)
 
 void Simplex::MyCamera::SetPositionTargetAndUp(vector3 a_v3Position, vector3 a_v3Target, vector3 a_v3Upward)
 {
+	// DEBUG: when is this being called?
+	std::cout << "upward param = (" <<
+		a_v3Upward.x << ", " <<
+		a_v3Upward.y << ", " <<
+		a_v3Upward.z << ")\n";
+
 	m_v3Position = a_v3Position;
 	m_v3Target = a_v3Target;
 	m_v3Up = a_v3Position + a_v3Upward;
@@ -135,8 +158,22 @@ void Simplex::MyCamera::SetPositionTargetAndUp(vector3 a_v3Position, vector3 a_v
 
 void Simplex::MyCamera::CalculateViewMatrix(void)
 {
+	// DEBUG: when is this being called?
+	//std::cout << "calculating view matrix....\n";
+
 	//Calculate the look at
-	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Up);
+	//m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Up);
+
+	//, the assignment above is the default
+	// BELOW IS STUFF I ADDED
+	// order matters for matrix multiplication
+	matrix4 m4Quat = glm::toMat4(m_qOrientation);
+	
+	// order 1
+	//m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Up) * m4Quat;
+
+	// order 2, i think this is the correct order
+	m_m4View = m4Quat * glm::lookAt(m_v3Position, m_v3Target, m_v3Up);
 }
 
 void Simplex::MyCamera::CalculateProjectionMatrix(void)

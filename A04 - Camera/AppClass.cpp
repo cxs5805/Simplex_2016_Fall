@@ -22,6 +22,8 @@ void Application::InitVariables(void)
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
+	quaternion o = m_pCamera->GetOrientation();
+	std::cout << "(" << o.w << ", " << o.x << ", " << o.y << ", " << o.z << ")\n";
 }
 void Application::Update(void)
 {
