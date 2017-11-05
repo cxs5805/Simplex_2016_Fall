@@ -155,6 +155,7 @@ public:
 	vector3 GetMyRight(void);
 
 	void SetMyUp(vector3 a_v3MyUp);
+	void SetMyUp();
 	vector3 GetMyUp(void);
 
 	void SetOrientationAngles(vector3 a_v3OrientationAngles);

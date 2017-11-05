@@ -21,6 +21,7 @@ void Simplex::MyCamera::SetMyRight(vector3 a_v3MyRight) { m_v3MyRight = a_v3MyRi
 vector3 Simplex::MyCamera::GetMyRight(void) { return m_v3MyRight; }
 
 void Simplex::MyCamera::SetMyUp(vector3 a_v3MyUp) { m_v3MyUp = a_v3MyUp; }
+void Simplex::MyCamera::SetMyUp() { m_v3MyUp = glm::cross(m_v3MyRight, m_v3MyForward); }
 vector3 Simplex::MyCamera::GetMyUp(void) { return m_v3MyUp; }
 
 void Simplex::MyCamera::SetOrientationAngles(vector3 a_v3OrientationAngles) { m_v3OrientationAngles = a_v3OrientationAngles; }

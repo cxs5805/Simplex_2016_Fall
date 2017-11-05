@@ -369,6 +369,61 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 	//Change the Yaw and the Pitch of the camera
+
+	vector3 v3ForwardTemp = m_pCamera->GetMyForward();
+	vector3 v3RightTemp = m_pCamera->GetMyRight();
+	vector3 v3UpTemp = m_pCamera->GetMyUp();
+
+	vector3 v3TempAngles = m_pCamera->GetOrientationAngles();
+	v3TempAngles.x += fAngleX * (PI / 180.0f);
+	v3TempAngles.y -= fAngleY * (PI / 180.0f);
+
+	// wrap around for x and y
+	if (v3TempAngles.x >= 2 * PI)
+	{
+		float fDifference = v3TempAngles.x - (2 * PI);
+		v3TempAngles.x = 0.0f + fDifference;
+	}
+	else if (v3TempAngles.x <= 0)
+	{
+		float fDifference = 0 - v3TempAngles.x;
+		v3TempAngles.x = (2 * PI) - fDifference;
+	}
+
+	if (v3TempAngles.y >= 2 * PI)
+	{
+		float fDifference = v3TempAngles.y - (2 * PI);
+		v3TempAngles.y = 0.0f + fDifference;
+	}
+	else if (v3TempAngles.y <= 0)
+	{
+		float fDifference = 0 - v3TempAngles.y;
+		v3TempAngles.y = (2 * PI) - fDifference;
+	}
+
+	m_pCamera->SetOrientationAngles(v3TempAngles);
+	
+	// then recalculate forward
+	v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y)));
+	//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
+
+	// and recalculate right
+	v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), v3RightTemp.y, glm::sin(v3TempAngles.y)));
+	//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
+
+	// DEBUG
+	std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
+
+	// reassign forward and right and up
+	m_pCamera->SetMyForward(v3ForwardTemp);
+	m_pCamera->SetMyRight(v3RightTemp);
+	//m_pCamera->SetMyUp(v3UpTemp);
+	m_pCamera->SetMyUp();
+	
+	// set camera's orientation based on angle
+	m_pCamera->SetOrientation(m_pCamera->GetOrientation() * glm::angleAxis(fAngleX, v3RightTemp));
+	m_pCamera->SetOrientation(m_pCamera->GetOrientation() * 0.5f * glm::angleAxis(-fAngleY, v3UpTemp));
+
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
 //Keyboard
@@ -427,6 +482,18 @@ void Application::ProcessKeyboard(void)
 		v3Temp += fSpeed * m_pCamera->GetMyRight();
 	}
 
+	// move up
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+	{
+		v3Temp += fSpeed * m_pCamera->GetMyUp();
+	}
+
+	// move down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		v3Temp -= fSpeed * m_pCamera->GetMyUp();
+	}
+
 	// now, update position!
 	vector3 v3OldPosition = m_pCamera->GetPosition();
 	m_pCamera->SetPosition(v3OldPosition + v3Temp);
@@ -435,7 +502,7 @@ void Application::ProcessKeyboard(void)
 	//vector3 v3NewTarget = m_pCamera->GetPosition() + m_pCamera->GetMyForward();
 	//m_pCamera->SetTarget(v3NewTarget);
 #pragma endregion
-
+	/*
 #pragma region Camera Orientation
 	// angle in DEGREES
 	float fAngle = 1.0f;
@@ -457,6 +524,7 @@ void Application::ProcessKeyboard(void)
 
 	vector3 v3ForwardTemp = m_pCamera->GetMyForward();
 	vector3 v3RightTemp = m_pCamera->GetMyRight();
+	vector3 v3UpTemp = m_pCamera->GetMyUp();
 
 	// rotate X
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
@@ -470,6 +538,36 @@ void Application::ProcessKeyboard(void)
 
 		// multiply it by existing orientation
 		m_pCamera->SetOrientation(m_pCamera->GetOrientation() * qTemp);
+		
+		// add angle (in radians) to existing rotation vector
+		vector3 v3TempAngles = m_pCamera->GetOrientationAngles();
+		v3TempAngles.x += fAngleRad;
+		// wrap around (if needed)
+		if (v3TempAngles.x >= 2 * PI)
+		{
+			float fDifference = v3TempAngles.x - (2 * PI);
+			v3TempAngles.x = 0.0f + fDifference;
+		}
+		else if (v3TempAngles.x <= 0)
+		{
+			float fDifference = 0 - v3TempAngles.x;
+			v3TempAngles.x = (2 * PI) - fDifference;
+		}
+
+		m_pCamera->SetOrientationAngles(v3TempAngles);
+		std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
+
+		// then recalculate forward
+		//vector3 v3ForwardTemp = m_pCamera->GetMyForward();
+		//v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), 0, -glm::cos(v3TempAngles.y)));
+		v3ForwardTemp = glm::normalize(vector3(v3ForwardTemp.x, -glm::sin(v3TempAngles.x), -glm::cos(v3TempAngles.x)));
+		//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
+
+		// and recalculate up
+		//vector3 v3RightTemp = m_pCamera->GetMyRight();
+		//v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), 0, glm::sin(v3TempAngles.y)));
+		v3UpTemp = glm::normalize(vector3(v3UpTemp.x, glm::cos(v3TempAngles.y), -glm::sin(v3TempAngles.y)));
+		//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
 	}
 
 	// rotate Y
@@ -512,13 +610,13 @@ void Application::ProcessKeyboard(void)
 		// then recalculate forward
 		//vector3 v3ForwardTemp = m_pCamera->GetMyForward();
 		//v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), 0, -glm::cos(v3TempAngles.y)));
-		//v3ForwardTemp = vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y));
+		v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y)));
 		//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
 
 		// and recalculate right
 		//vector3 v3RightTemp = m_pCamera->GetMyRight();
 		//v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), 0, glm::sin(v3TempAngles.y)));
-		v3RightTemp = vector3(glm::cos(v3TempAngles.y), v3RightTemp.y, glm::sin(v3TempAngles.y));
+		v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), v3RightTemp.y, glm::sin(v3TempAngles.y)));
 		//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
 		
 
@@ -536,11 +634,13 @@ void Application::ProcessKeyboard(void)
 	// assignment doesn't require rotation in Z
 
 #pragma endregion
-
-	// reassign forward and right
+	
+	// reassign forward and right and up
 	m_pCamera->SetMyForward(v3ForwardTemp);
 	m_pCamera->SetMyRight(v3RightTemp);
-
+	//m_pCamera->SetMyUp(v3UpTemp);
+	m_pCamera->SetMyUp();
+	//*/
 	// on every frame, set target to position + my forward
 	vector3 v3NewTarget = m_pCamera->GetPosition() + m_pCamera->GetMyForward();
 	m_pCamera->SetTarget(v3NewTarget);
