@@ -125,8 +125,8 @@ Simplex::MyCamera::~MyCamera(void)
 
 void Simplex::MyCamera::ResetCamera(void)
 {
-	m_v3Position = vector3(0.0f, 0.0f, 10.0f); //Where my camera is located
-	m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
+	m_v3Position = vector3(0.0f, 3.0f, 20.0f); //Where my camera is located
+	m_v3Target = vector3(0.0f, 3.0f, 19.0f); //What I'm looking at
 	m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
 	m_qOrientation = IDENTITY_QUAT; // camera's orientation
@@ -136,6 +136,8 @@ void Simplex::MyCamera::ResetCamera(void)
 	m_v3MyUp = vector3(0.0f, 1.0f, 0.0f);
 
 	m_v3OrientationAngles = vector3(0.0f, 0.0f, 0.0f);// reset the orientation angles
+
+	counter = 0;
 
 	m_bPerspective = true; //perspective view? False is Orthographic
 

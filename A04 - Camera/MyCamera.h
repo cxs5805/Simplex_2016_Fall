@@ -16,7 +16,7 @@ class MyCamera
 	vector3 m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	vector3 m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
-	quaternion m_qOrientation; // camera's orientation
+	quaternion m_qOrientation = IDENTITY_QUAT; // camera's orientation
 
 	// what point is to the camera's...
 	vector3 m_v3MyForward = vector3(0.0f, 0.0f, -1.0f);
@@ -29,7 +29,7 @@ class MyCamera
 	// though this isn't used for calculating the view matrix,
 	// the following vector3 should still be able to help w/
 	// recalculating the forward and right (and maybe up vectors)
-	vector3 m_v3OrientationAngles;
+	vector3 m_v3OrientationAngles = vector3(0.0f, 0.0f, 0.0f);
 
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
@@ -159,6 +159,9 @@ public:
 
 	void SetOrientationAngles(vector3 a_v3OrientationAngles);
 	vector3 GetOrientationAngles(void);
+
+	// just temporary
+	uint counter = 0;
 
 	/*
 	USAGE: Sets Perspective Camera

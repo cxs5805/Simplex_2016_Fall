@@ -472,7 +472,13 @@ void Application::ProcessKeyboard(void)
 	// rotate Y
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 	{
-		std::cout << "rotate Y\n";
+		m_pCamera->counter++;
+		std::cout << "\n-\nrotate Y\n" <<
+			"angle = " << fAngle <<
+			"\nradians = " << fAngleRad <<
+			"\nrad*360 = " << fAngleRad * 360 <<
+			"\n2PI = " << 2 * PI <<
+			"\ncounter = " << m_pCamera->counter << "\n";
 
 		// get the rotation
 		vector3 axis = AXIS_Y;
@@ -498,29 +504,31 @@ void Application::ProcessKeyboard(void)
 		}
 
 		m_pCamera->SetOrientationAngles(v3TempAngles);
-		//std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
+		std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
 
 		// then recalculate forward
 		vector3 v3ForwardTemp = m_pCamera->GetMyForward();
-		v3ForwardTemp = vector3(glm::sin(v3TempAngles.y), 0, -glm::cos(v3TempAngles.y));
-		v3ForwardTemp = vector3(glm::sin(v3TempAngles.y), 0, -glm::cos(v3TempAngles.y));
+		//v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), 0, -glm::cos(v3TempAngles.y)));
+		//v3ForwardTemp = vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y));
 		//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
 
 		// and recalculate right
 		vector3 v3RightTemp = m_pCamera->GetMyRight();
-		v3RightTemp = vector3(glm::cos(v3TempAngles.y), 0, glm::sin(v3TempAngles.y));
+		//v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), 0, glm::sin(v3TempAngles.y)));
+		v3RightTemp = vector3(glm::cos(v3TempAngles.y), v3RightTemp.y, glm::sin(v3TempAngles.y));
 		//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
+		
 
-		// this is the tricky part: reassign forward and right
-		//m_pCamera->SetMyForward(v3ForwardTemp);
-		//m_pCamera->SetMyRight(v3RightTemp);
+		// reassign forward and right
+		m_pCamera->SetMyForward(v3ForwardTemp);
+		m_pCamera->SetMyRight(v3RightTemp);
 
 		// just in case, reassign target to forward again
-		//m_pCamera->SetTarget(m_pCamera->GetPosition() + m_pCamera->GetMyForward());
+		m_pCamera->SetTarget(m_pCamera->GetPosition() + m_pCamera->GetMyForward());
 	}
 
-	vector3 v3Fwd = m_pCamera->GetMyForward();
-	std::cout << "(" << v3Fwd.x << ", " << v3Fwd.y << ", " << v3Fwd.z << ")\n";
+	//vector3 v3Fwd = m_pCamera->GetTarget();
+	//std::cout << "(" << v3Fwd.x << ", " << v3Fwd.y << ", " << v3Fwd.z << ")\n";
 
 	// assignment doesn't require rotation in Z
 
