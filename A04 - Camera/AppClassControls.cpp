@@ -432,8 +432,8 @@ void Application::ProcessKeyboard(void)
 	m_pCamera->SetPosition(v3OldPosition + v3Temp);
 
 	// on every frame, set target to position + my forward
-	vector3 v3NewTarget = m_pCamera->GetPosition() + m_pCamera->GetMyForward();
-	m_pCamera->SetTarget(v3NewTarget);
+	//vector3 v3NewTarget = m_pCamera->GetPosition() + m_pCamera->GetMyForward();
+	//m_pCamera->SetTarget(v3NewTarget);
 #pragma endregion
 
 #pragma region Camera Orientation
@@ -454,6 +454,9 @@ void Application::ProcessKeyboard(void)
 	// future me, what are we going to rotate about?
 	// as of Friday it's about global X and global Y,
 	// but that doesn't seem to be what we want
+
+	vector3 v3ForwardTemp = m_pCamera->GetMyForward();
+	vector3 v3RightTemp = m_pCamera->GetMyRight();
 
 	// rotate X
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
@@ -507,24 +510,24 @@ void Application::ProcessKeyboard(void)
 		std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
 
 		// then recalculate forward
-		vector3 v3ForwardTemp = m_pCamera->GetMyForward();
+		//vector3 v3ForwardTemp = m_pCamera->GetMyForward();
 		//v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), 0, -glm::cos(v3TempAngles.y)));
 		//v3ForwardTemp = vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y));
 		//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
 
 		// and recalculate right
-		vector3 v3RightTemp = m_pCamera->GetMyRight();
+		//vector3 v3RightTemp = m_pCamera->GetMyRight();
 		//v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), 0, glm::sin(v3TempAngles.y)));
 		v3RightTemp = vector3(glm::cos(v3TempAngles.y), v3RightTemp.y, glm::sin(v3TempAngles.y));
 		//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
 		
 
 		// reassign forward and right
-		m_pCamera->SetMyForward(v3ForwardTemp);
-		m_pCamera->SetMyRight(v3RightTemp);
+		//m_pCamera->SetMyForward(v3ForwardTemp);
+		//m_pCamera->SetMyRight(v3RightTemp);
 
 		// just in case, reassign target to forward again
-		m_pCamera->SetTarget(m_pCamera->GetPosition() + m_pCamera->GetMyForward());
+		//m_pCamera->SetTarget(m_pCamera->GetPosition() + m_pCamera->GetMyForward());
 	}
 
 	//vector3 v3Fwd = m_pCamera->GetTarget();
@@ -534,6 +537,13 @@ void Application::ProcessKeyboard(void)
 
 #pragma endregion
 
+	// reassign forward and right
+	m_pCamera->SetMyForward(v3ForwardTemp);
+	m_pCamera->SetMyRight(v3RightTemp);
+
+	// on every frame, set target to position + my forward
+	vector3 v3NewTarget = m_pCamera->GetPosition() + m_pCamera->GetMyForward();
+	m_pCamera->SetTarget(v3NewTarget);
 	// just in case, reassign target to forward again
 	//m_pCamera->SetTarget(m_pCamera->GetMyForward());
 }
