@@ -157,10 +157,10 @@ void Simplex::MyCamera::ResetCamera(void)
 void Simplex::MyCamera::SetPositionTargetAndUp(vector3 a_v3Position, vector3 a_v3Target, vector3 a_v3Upward)
 {
 	// DEBUG: when is this being called?
-	std::cout << "upward param = (" <<
-		a_v3Upward.x << ", " <<
-		a_v3Upward.y << ", " <<
-		a_v3Upward.z << ")\n";
+	//std::cout << "upward param = (" <<
+	//	a_v3Upward.x << ", " <<
+	//	a_v3Upward.y << ", " <<
+	//	a_v3Upward.z << ")\n";
 
 	m_v3Position = a_v3Position;
 	m_v3Target = a_v3Target;

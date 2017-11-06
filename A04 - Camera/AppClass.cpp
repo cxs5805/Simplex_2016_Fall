@@ -3,7 +3,7 @@ using namespace Simplex;
 void Application::InitVariables(void)
 {
 	////Change this to your name and email
-	//m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Chris Schiff - cxs5805@g.rit.edu";
 
 	////Alberto needed this at this position for software recording.
 	//m_pWindow->setPosition(sf::Vector2i(710, 0));
@@ -23,8 +23,8 @@ void Application::InitVariables(void)
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
-	quaternion o = m_pCamera->GetOrientation();
-	std::cout << "(" << o.w << ", " << o.x << ", " << o.y << ", " << o.z << ")\n";
+	//quaternion o = m_pCamera->GetOrientation();
+	//std::cout << "(" << o.w << ", " << o.x << ", " << o.y << ", " << o.z << ")\n";
 }
 void Application::Update(void)
 {

@@ -375,6 +375,8 @@ void Application::CameraRotation(float a_fSpeed)
 	vector3 v3UpTemp = m_pCamera->GetMyUp();
 
 	vector3 v3TempAngles = m_pCamera->GetOrientationAngles();
+	
+	// get angle in radians each frame
 	v3TempAngles.x += fAngleX * (PI / 180.0f);
 	v3TempAngles.y -= fAngleY * (PI / 180.0f);
 
@@ -402,17 +404,21 @@ void Application::CameraRotation(float a_fSpeed)
 	}
 
 	m_pCamera->SetOrientationAngles(v3TempAngles);
-	
+
 	// then recalculate forward
+	// rotate forward vector first about X, then about Y
+	//v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y)));
+	v3ForwardTemp = glm::normalize(vector3(v3ForwardTemp.x, -glm::sin(v3TempAngles.x), -glm::cos(v3TempAngles.x)));
 	v3ForwardTemp = glm::normalize(vector3(glm::sin(v3TempAngles.y), v3ForwardTemp.y, -glm::cos(v3TempAngles.y)));
-	//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
-
+	
 	// and recalculate right
+	// since not rotating about Z, we only need to rotate the right vector about Y
 	v3RightTemp = glm::normalize(vector3(glm::cos(v3TempAngles.y), v3RightTemp.y, glm::sin(v3TempAngles.y)));
-	//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
-
+	
 	// DEBUG
-	std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
+	//std::cout << "(" << v3ForwardTemp.x << ", " << v3ForwardTemp.y << ", " << v3ForwardTemp.z << ")\n";
+	//std::cout << "(" << v3RightTemp.x << ", " << v3RightTemp.y << ", " << v3RightTemp.z << ")\n";
+	//std::cout << "(" << v3TempAngles.x << ", " << v3TempAngles.y << ", " << v3TempAngles.z << ")\n";
 
 	// reassign forward and right and up
 	m_pCamera->SetMyForward(v3ForwardTemp);
@@ -422,6 +428,8 @@ void Application::CameraRotation(float a_fSpeed)
 	
 	// set camera's orientation based on angle
 	m_pCamera->SetOrientation(m_pCamera->GetOrientation() * glm::angleAxis(fAngleX, v3RightTemp));
+	// for some reason I don't understand, the Y-axis angle gets doubled
+	// i.e. if the camera visually rotates 360 degrees, forward vector becomes (0, 0, 1), which is literally backwards
 	m_pCamera->SetOrientation(m_pCamera->GetOrientation() * 0.5f * glm::angleAxis(-fAngleY, v3UpTemp));
 
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
@@ -482,16 +490,18 @@ void Application::ProcessKeyboard(void)
 		v3Temp += fSpeed * m_pCamera->GetMyRight();
 	}
 
-	// move up
+	// move in global up
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 	{
-		v3Temp += fSpeed * m_pCamera->GetMyUp();
+		//v3Temp += fSpeed * m_pCamera->GetMyUp();
+		v3Temp += fSpeed * m_pCamera->GetUp();
 	}
 
-	// move down
+	// move in global down
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 	{
-		v3Temp -= fSpeed * m_pCamera->GetMyUp();
+		//v3Temp -= fSpeed * m_pCamera->GetMyUp();
+		v3Temp -= fSpeed * m_pCamera->GetUp();
 	}
 
 	// now, update position!
