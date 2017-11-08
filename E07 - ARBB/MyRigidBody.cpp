@@ -87,6 +87,64 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	//your code goes here---------------------
 	m_v3MinG = m_v3MinL;
 	m_v3MaxG = m_v3MaxL;
+
+	// fetch all of the corners of the box in local space
+	vector3 points[8];
+
+	// the back of the model
+	// 2--3
+	// \   
+	//  \  
+	// 0--1
+	points[0] = m_v3MinL;
+	points[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
+	points[2] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z);
+	points[3] = vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z);
+
+	// the front of the model
+	// 6--7
+	// \   
+	//  \  
+	// 4--5
+	points[4] = vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z);
+	points[5] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z);
+	points[6] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z);
+	points[7] = m_v3MaxL;
+
+	// translate these points into world space using the model-to-world matrix
+	for (int i = 0; i < 8; i++)
+		points[i] = vector3(m_m4ToWorld * vector4(points[i], 1.0f));
+	
+	// now set the global coordinates based on the now world-spaced corners
+	m_v3MinG = points[0];
+	m_v3MaxG = points[7];
+
+	// what's min in local isn't necessarily min in global (same for max)
+	// so we need to get the lowest x y and z values and set those equal to global min
+	// and we need to get the highest x y and z values and set those equal to global max
+	for (int i = 0; i < 8; i++)
+	{
+		//std::cout << "(" << points[i].x << ", " << points[i].y << ", " << points[i].z << ")\n";
+		
+		// check x
+		if (points[i].x < m_v3MinG.x)
+			m_v3MinG.x = points[i].x;
+		if (points[i].x > m_v3MaxG.x)
+			m_v3MaxG.x = points[i].x;
+
+		// check y
+		if (points[i].y < m_v3MinG.y)
+			m_v3MinG.y = points[i].y;
+		if (points[i].y > m_v3MaxG.y)
+			m_v3MaxG.y = points[i].y;
+
+		// check z
+		if (points[i].z < m_v3MinG.z)
+			m_v3MinG.z = points[i].z;
+		if (points[i].z > m_v3MaxG.z)
+			m_v3MaxG.z = points[i].z;
+	}
+
 	//----------------------------------------
 
 	//we calculate the distance between min and max vectors
