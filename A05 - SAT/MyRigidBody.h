@@ -27,6 +27,7 @@ class MyRigidBody
 	vector3 m_v3Center = ZERO_V3; //center point in local space
 	vector3 m_v3MinL = ZERO_V3; //minimum coordinate in local space (for OBB)
 	vector3 m_v3MaxL = ZERO_V3; //maximum coordinate in local space (for OBB)
+	vector3 v3Corner[8];
 
 	vector3 m_v3MinG = ZERO_V3; //minimum coordinate in global space (for ARBB)
 	vector3 m_v3MaxG = ZERO_V3; //maximum coordinate in global space (for ARBB)

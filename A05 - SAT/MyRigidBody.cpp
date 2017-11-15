@@ -86,7 +86,7 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	m_m4ToWorld = a_m4ModelMatrix;
 
 	//Calculate the 8 corners of the cube
-	vector3 v3Corner[8];
+	v3Corner[8];
 	//Back square
 	v3Corner[0] = m_v3MinL;
 	v3Corner[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
@@ -351,27 +351,41 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 	// my x
 	// maybe, we 
-	vector3 v3_myX = vector3(1.0f, 0.0f, 0.0f);
+	vector3 v3_myX;// = vector3(1.0f, 0.0f, 0.0f);
 
 	// cross local coords to get axis???
 	vector3 temp1 = myCornersG[2] - myCornersG[0];//myCornersG[4] - myCornersG[0]; // z // these two crossed w/each other form y-axis
 	vector3 temp2 = myCornersG[4] - myCornersG[0];//myCornersG[1] - myCornersG[0]; // x // these two crossed w/each other form y-axis
 
-	v3_myX = glm::normalize(glm::cross(temp1, temp2));
-	//std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
+	//v3_myX = glm::normalize(glm::cross(temp1, temp2));
 
-	if (!CollidingOnAxis(v3_myX, myCornersG, otherCornersG))
+	// I'm thinking about it too hard...
+	// let's try just getting the side along a corner and just not normalize it
+	// DEBUG
+	vector3 tempLocal =  myCornersL[4] - myCornersL[0];
+	vector3 tempGlobal = myCornersG[4] - myCornersG[0];
+	//std::cout << "(" << tempLocal.x << ", " << tempLocal.y << ", " << tempLocal.z << ")\n";
+	//std::cout << "(" << tempGlobal.x << ", " << tempGlobal.y << ", " << tempGlobal.z << ")\n";
+
+	v3_myX = v3Corner[1] - v3Corner[0];
+	std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
+
+	// my x
+	if (!CollidingOnAxis(v3_myX, v3Corner, a_pOther->v3Corner))
 	{
 		std::cout << "failed my x\n";
 		return 1;
 	}
-
+	//*
 	// my y
 	temp1 = myCornersG[4] - myCornersG[0];
 	temp2 = myCornersG[1] - myCornersG[0];
-	vector3 v3_myY = glm::normalize(glm::cross(temp1, temp2));
+	vector3 v3_myY;// = glm::normalize(glm::cross(temp1, temp2));
+	
+	v3_myY = v3Corner[2] - v3Corner[0];
 	std::cout << "(" << v3_myY.x << ", " << v3_myY.y << ", " << v3_myY.z << ")\n";
-	if (!CollidingOnAxis(v3_myY, myCornersG, otherCornersG))
+	
+	if (!CollidingOnAxis(v3_myY, v3Corner, a_pOther->v3Corner))
 	{
 		std::cout << "failed my y\n";
 		return 1;
@@ -380,9 +394,12 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// my z
 	temp1 = myCornersG[1] - myCornersG[0];
 	temp2 = myCornersG[2] - myCornersG[0];
-	vector3 v3_myZ = glm::normalize(glm::cross(temp1, temp2));
+	vector3 v3_myZ;// = glm::normalize(glm::cross(temp1, temp2));
+
+	v3_myZ = v3Corner[4] - v3Corner[0];
 	std::cout << "(" << v3_myZ.x << ", " << v3_myZ.y << ", " << v3_myZ.z << ")\n";
-	if (!CollidingOnAxis(v3_myZ, myCornersG, otherCornersG))
+	
+	if (!CollidingOnAxis(v3_myZ, v3Corner, a_pOther->v3Corner))
 	{
 		std::cout << "failed my z\n";
 		return 1;
@@ -391,9 +408,12 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// other x
 	temp1 = otherCornersG[2] - otherCornersG[0];
 	temp2 = otherCornersG[4] - otherCornersG[0];
-	vector3 v3_otherX = glm::normalize(glm::cross(temp1, temp2));
+	vector3 v3_otherX;// = glm::normalize(glm::cross(temp1, temp2));
+
+	v3_otherX = a_pOther->v3Corner[1] - a_pOther->v3Corner[0];
 	std::cout << "(" << v3_otherX.x << ", " << v3_otherX.y << ", " << v3_otherX.z << ")\n";
-	if (!CollidingOnAxis(v3_otherX, myCornersG, otherCornersG))
+	
+	if (!CollidingOnAxis(v3_otherX, v3Corner, a_pOther->v3Corner))
 	{
 		std::cout << "failed other y\n";
 		return 1;
@@ -402,9 +422,12 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// other y
 	temp1 = otherCornersG[4] - otherCornersG[0];
 	temp2 = otherCornersG[1] - otherCornersG[0];
-	vector3 v3_otherY = glm::normalize(glm::cross(temp1, temp2));
+	vector3 v3_otherY;// = glm::normalize(glm::cross(temp1, temp2));
+
+	v3_otherY = a_pOther->v3Corner[2] - a_pOther->v3Corner[0];
 	std::cout << "(" << v3_otherY.x << ", " << v3_otherY.y << ", " << v3_otherY.z << ")\n";
-	if (!CollidingOnAxis(v3_otherY, myCornersG, otherCornersG))
+	
+	if (!CollidingOnAxis(v3_otherY, v3Corner, a_pOther->v3Corner))
 	{
 		std::cout << "failed other y\n";
 		return 1;
@@ -413,29 +436,93 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// other z
 	temp1 = otherCornersG[1] - otherCornersG[0];
 	temp2 = otherCornersG[2] - otherCornersG[0];
-	vector3 v3_otherZ = glm::normalize(glm::cross(temp1, temp2));
+	vector3 v3_otherZ;// = glm::normalize(glm::cross(temp1, temp2));
+
+	v3_otherZ = a_pOther->v3Corner[4] - a_pOther->v3Corner[0];
 	std::cout << "(" << v3_otherZ.x << ", " << v3_otherZ.y << ", " << v3_otherZ.z << ")\n";
-	if (!CollidingOnAxis(v3_otherZ, myCornersG, otherCornersG))
+	
+	if (!CollidingOnAxis(v3_otherZ, v3Corner, a_pOther->v3Corner))
 	{
 		std::cout << "failed other z\n";
 		return 1;
 	}
+	//*/
 
 	// now onto the 9 cross products
 	
 	// my x cross other x
+	vector3 v3_myX_otherX = glm::cross(v3_myX, v3_otherX);
+	if (!CollidingOnAxis(v3_myX_otherX, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my x cross other x\n";
+		return 1;
+	}
+
 	// my x cross other y
+	vector3 v3_myX_otherY = glm::cross(v3_myX, v3_otherY);
+	if (!CollidingOnAxis(v3_myX_otherY, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my x cross other y\n";
+		return 1;
+	}
+
 	// my x cross other z
+	vector3 v3_myX_otherZ = glm::cross(v3_myX, v3_otherZ);
+	if (!CollidingOnAxis(v3_myX_otherZ, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my x cross other z\n";
+		return 1;
+	}
 
 	// my y cross other x
+	vector3 v3_myY_otherX = glm::cross(v3_myY, v3_otherX);
+	if (!CollidingOnAxis(v3_myY_otherX, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my y cross other x\n";
+		return 1;
+	}
+
 	// my y cross other y
+	vector3 v3_myY_otherY = glm::cross(v3_myY, v3_otherY);
+	if (!CollidingOnAxis(v3_myY_otherY, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my y cross other y\n";
+		return 1;
+	}
+
 	// my y cross other z
+	vector3 v3_myY_otherZ = glm::cross(v3_myY, v3_otherZ);
+	if (!CollidingOnAxis(v3_myY_otherZ, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my y cross other z\n";
+		return 1;
+	}
 
 	// my z cross other x
-	// my z cross other y
-	// my z cross other z
+	vector3 v3_myZ_otherX = glm::cross(v3_myZ, v3_otherX);
+	if (!CollidingOnAxis(v3_myZ_otherX, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my z cross other x\n";
+		return 1;
+	}
 
-	std::cout << "";
+	// my z cross other y
+	vector3 v3_myZ_otherY = glm::cross(v3_myZ, v3_otherY);
+	if (!CollidingOnAxis(v3_myZ_otherY, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my z cross other y\n";
+		return 1;
+	}
+	
+	// my z cross other z
+	vector3 v3_myZ_otherZ = glm::cross(v3_myZ, v3_otherZ);
+	if (!CollidingOnAxis(v3_myZ_otherZ, v3Corner, a_pOther->v3Corner))
+	{
+		std::cout << "failed my z cross other z\n";
+		return 1;
+	}
+
+	//std::cout << "";
 
 
 	/*
@@ -586,56 +673,57 @@ bool MyRigidBody::CollidingOnAxis(vector3 axis, vector3 myCornersG[], vector3 ot
 		myCornersM[i] = glm::dot(myCornersG[i], axis);
 		myCornersP[i] = axis * glm::dot(myCornersG[i], axis);
 		//std::cout << "myCornersP["<< i << "] = (" << myCornersP[i].x << ", " << myCornersP[i].y << ", " << myCornersP[i].z << ")\n";
-		std::cout << "myCornersM[" << i << "] = " << myCornersM[i] << "\n";
+		//std::cout << "myCornersM[" << i << "] = " << myCornersM[i] << "\n";
 
-		// if point is greater than max, set max to that
-		if (myCornersM[i] > myMaxAlongAxis)
-			myMaxAlongAxis = myCornersM[i];
-		// if point is less than min, set min to that
-		if (myCornersM[i] < myMinAlongAxis)
-			myMinAlongAxis = myCornersM[i];
+		//// if point is greater than max, set max to that
+		//if (myCornersM[i] > myMaxAlongAxis)
+		//	myMaxAlongAxis = myCornersM[i];
+		//// if point is less than min, set min to that
+		//if (myCornersM[i] < myMinAlongAxis)
+		//	myMinAlongAxis = myCornersM[i];
 
 		otherCornersM[i] = glm::dot(otherCornersG[i], axis);
 		otherCornersP[i] = axis * glm::dot(otherCornersG[i], axis);
 		//std::cout << "otherCornersP[" << i << "] = (" << otherCornersP[i].x << ", " << otherCornersP[i].y << ", " << otherCornersP[i].z << ")\n";
-		std::cout << "otherCornersM[" << i << "] = " << otherCornersM[i] << "\n";
+		//std::cout << "otherCornersM[" << i << "] = " << otherCornersM[i] << "\n";
 
-		// if point is greater than max, set max to that
-		if (otherCornersM[i] > otherMaxAlongAxis)
-			otherMaxAlongAxis = otherCornersM[i];
-		// if point is less than min, set min to that
-		if (otherCornersM[i] < otherMinAlongAxis)
-			otherMinAlongAxis = otherCornersM[i];
+		//// if point is greater than max, set max to that
+		//if (otherCornersM[i] > otherMaxAlongAxis)
+		//	otherMaxAlongAxis = otherCornersM[i];
+		//// if point is less than min, set min to that
+		//if (otherCornersM[i] < otherMinAlongAxis)
+		//	otherMinAlongAxis = otherCornersM[i];
 	}
 
 	// find my max and min
-	myMaxAlongAxis = myCornersM[0];
-	myMinAlongAxis = myCornersM[0];
-	otherMaxAlongAxis = otherCornersM[0];
-	otherMinAlongAxis = otherCornersM[0];
+	myMaxAlongAxis =    std::numeric_limits<float>::min();//myCornersM[0];
+	myMinAlongAxis =    std::numeric_limits<float>::max();//myCornersM[0];
+	otherMaxAlongAxis = std::numeric_limits<float>::min();//otherCornersM[0];
+	otherMinAlongAxis = std::numeric_limits<float>::max();//otherCornersM[0];
 	for (uint i = 0; i < 8; i++)
 	{
 		// if point is greater than max, set max to that
 		if (myCornersM[i] > myMaxAlongAxis)
 			myMaxAlongAxis = myCornersM[i];
 		// if point is less than min, set min to that
-		if (myCornersM[i] < myMinAlongAxis)
+		else if (myCornersM[i] < myMinAlongAxis)
 			myMinAlongAxis = myCornersM[i];
 
 		// if point is greater than max, set max to that
 		if (otherCornersM[i] > otherMaxAlongAxis)
 			otherMaxAlongAxis = otherCornersM[i];
 		// if point is less than min, set min to that
-		if (otherCornersM[i] < otherMinAlongAxis)
+		else if (otherCornersM[i] < otherMinAlongAxis)
 			otherMinAlongAxis = otherCornersM[i];
 	}
 
-	std::cout << "my max = " << myMaxAlongAxis << "\n";
-	std::cout << "my min = " << myMinAlongAxis << "\n";
-
-	// and other
-	std::cout << "other max = " << otherMaxAlongAxis << "\n";
-	std::cout << "other min = " << otherMinAlongAxis << "\n";
+	// 1st check
+	//std::cout << "my max = " << myMaxAlongAxis << "\n";
+	//std::cout << "other min = " << otherMinAlongAxis << "\n";
+	
+	// 2nd check
+	//std::cout << "other max = " << otherMaxAlongAxis << "\n";
+	//std::cout << "my min = " << myMinAlongAxis << "\n";
 
 	// now test collision along this one axis
 	if (myMaxAlongAxis < otherMinAlongAxis || otherMaxAlongAxis < myMinAlongAxis)
@@ -643,5 +731,6 @@ bool MyRigidBody::CollidingOnAxis(vector3 axis, vector3 myCornersG[], vector3 ot
 		std::cout << "failed on axis (" << axis.x << ", " << axis.y << ", " << axis.z << ")\n\n";
 		return false;
 	}
+	std::cout << "succeeded on axis (" << axis.x << ", " << axis.y << ", " << axis.z << ")\n\n";
 	return true;
 }
