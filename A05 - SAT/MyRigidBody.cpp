@@ -324,10 +324,12 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	otherCorners[7] = a_pOther->m_v3MaxL;
 	
 	// is this step even necessary?
-	//for (uint i = 0; i < 8; i++)
-	//	myCorners[i] = vector3(m_m4ToWorld * vector4(myCorners[i], 1.0f));
-	//for (uint i = 0; i < 8; i++)
-	//	otherCorners[i] = vector3(m_m4ToWorld * vector4(otherCorners[i], 1.0f));
+	// actually yes, very yes
+	// how else can I properly project onto global axes for each test?
+	for (uint i = 0; i < 8; i++)
+		myCorners[i] = vector3(m_m4ToWorld * vector4(myCorners[i], 1.0f));
+	for (uint i = 0; i < 8; i++)
+		otherCorners[i] = vector3(m_m4ToWorld * vector4(otherCorners[i], 1.0f));
 
 	// alright, how do we do the easy axes?
 	// excerpt from orange book:
@@ -344,12 +346,20 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// b/c projected
 
 	// how do we figure out radius for a given axis????
+	// project onto axis in global space
 	float v3_rA, v3_rB = 0.0f;
 
 	// my x
+	// maybe, we 
 	vector3 v3_myX = vector3(1.0f, 0.0f, 0.0f);
+
+	// local to global
+	//v3_myX = glm::normalize(vector3(m_m4ToWorld * vector4(m_v3Center, 1.0f)));
+	std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
 	v3_rA = GetHalfWidth().x;
+	v3_rA = glm::dot(GetHalfWidth(), v3_myX);
 	v3_rB = a_pOther->GetHalfWidth().x;
+	v3_rB = glm::dot(a_pOther->GetHalfWidth(), v3_myX);
 	if (glm::abs(glm::dot(v3_distance, v3_myX)) > v3_rA + v3_rB)
 	{
 		std::cout << "failed my x\n";
@@ -385,8 +395,6 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 	//there is no axis test that separates this two objects
 	//return 1;
-	// DEBUG
-	std::cout << "collision!!!!!!!!!!!!!!!!!!!!!!!\n";
 	//*/
 	return eSATResults::SAT_NONE;
 }
