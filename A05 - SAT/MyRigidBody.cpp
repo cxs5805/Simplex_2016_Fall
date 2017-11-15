@@ -285,11 +285,50 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	find a separating axis you need to return 0, there is an enum in
 	Simplex that might help you [eSATResults] feel free to use it.
 	(eSATResults::SAT_NONE has a value of 0)
-	*/
+	//*/
 
-	// DEBUG
-	//std::cout << 
+	// ideas borrowed from E07
+	// translate all 16 points (8 for my box, 8 for other box) from local to global
+	vector3 myCorners[8], otherCorners[8];
+
+	// back face
+	// 2 3
+	// 0 1
+	myCorners[0] = m_v3MinL;
+	myCorners[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
+	myCorners[2] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z);
+	myCorners[3] = vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z);
 	
+	// front face
+	// 6 7
+	// 4 5
+	myCorners[4] = vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z);
+	myCorners[5] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z);
+	myCorners[6] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z);
+	myCorners[7] = m_v3MaxL;
+
+	// back face
+	// 2 3
+	// 0 1
+	otherCorners[0] = a_pOther->m_v3MinL;
+	otherCorners[1] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MinL.z);
+	otherCorners[2] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MinL.z);
+	otherCorners[3] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MinL.z);
+
+	// front face
+	// 6 7
+	// 4 5
+	otherCorners[4] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MaxL.z);
+	otherCorners[5] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MaxL.z);
+	otherCorners[6] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MaxL.z);
+	otherCorners[7] = a_pOther->m_v3MaxL;
+	
+	// is this step even necessary?
+	//for (uint i = 0; i < 8; i++)
+	//	myCorners[i] = vector3(m_m4ToWorld * vector4(myCorners[i], 1.0f));
+	//for (uint i = 0; i < 8; i++)
+	//	otherCorners[i] = vector3(m_m4ToWorld * vector4(otherCorners[i], 1.0f));
+
 	// alright, how do we do the easy axes?
 	// excerpt from orange book:
 	// "Two OBBs are separated if for some axis L
@@ -305,21 +344,38 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// b/c projected
 
 	// how do we figure out radius for a given axis????
-	vector3 v3_rA, v3_rB;
+	float v3_rA, v3_rB = 0.0f;
 
 	// my x
-	// 
 	vector3 v3_myX = vector3(1.0f, 0.0f, 0.0f);
 	v3_rA = GetHalfWidth().x;
-	bool b_myX = glm::abs(glm::dot(v3_distance, v3_myX)) > v3_rA + v3_rB;
-
-	if (b_myX)
+	v3_rB = a_pOther->GetHalfWidth().x;
+	if (glm::abs(glm::dot(v3_distance, v3_myX)) > v3_rA + v3_rB)
 	{
+		std::cout << "failed my x\n";
 		return 1;
 	}
 
 	// my y
+	vector3 v3_myY = vector3(0.0f, 1.0f, 0.0f);
+	v3_rA = GetHalfWidth().y;
+	v3_rB = a_pOther->GetHalfWidth().y;
+	if (glm::abs(glm::dot(v3_distance, v3_myY)) > v3_rA + v3_rB)
+	{
+		std::cout << "failed my y\n";
+		return 1;
+	}
+
 	// my z
+	vector3 v3_myZ = vector3(0.0f, 0.0f, 1.0f);
+	v3_rA = GetHalfWidth().z;
+	v3_rB = a_pOther->GetHalfWidth().z;
+	if (glm::abs(glm::dot(v3_distance, v3_myZ)) > v3_rA + v3_rB)
+	{
+		std::cout << "failed my z\n";
+		return 1;
+	}
+
 
 	// other's x (my x, but the other way)
 	// other's y (my y, but the other way)
@@ -329,5 +385,8 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 	//there is no axis test that separates this two objects
 	//return 1;
+	// DEBUG
+	std::cout << "collision!!!!!!!!!!!!!!!!!!!!!!!\n";
+	//*/
 	return eSATResults::SAT_NONE;
 }
