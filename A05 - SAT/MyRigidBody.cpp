@@ -287,6 +287,47 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
 
+	// DEBUG
+	//std::cout << 
+	
+	// alright, how do we do the easy axes?
+	// excerpt from orange book:
+	// "Two OBBs are separated if for some axis L
+	// the sum of their projected radii is
+	// less than the distance between their projected centers."
+
+	// T = Other's center - my center
+	vector3 v3_distance = a_pOther->GetCenterGlobal() - GetCenterGlobal();
+	// L = axis
+	vector3 axis;
+
+	// glm::abs(glm::dot(T, L)) = distance b/w centers along axis
+	// b/c projected
+
+	// how do we figure out radius for a given axis????
+	vector3 v3_rA, v3_rB;
+
+	// my x
+	// 
+	vector3 v3_myX = vector3(1.0f, 0.0f, 0.0f);
+	v3_rA = GetHalfWidth().x;
+	bool b_myX = glm::abs(glm::dot(v3_distance, v3_myX)) > v3_rA + v3_rB;
+
+	if (b_myX)
+	{
+		return 1;
+	}
+
+	// my y
+	// my z
+
+	// other's x (my x, but the other way)
+	// other's y (my y, but the other way)
+	// other's z (my z, but the other way)
+
+	// wacky cross products
+
 	//there is no axis test that separates this two objects
+	//return 1;
 	return eSATResults::SAT_NONE;
 }
