@@ -251,7 +251,7 @@ private:
 	// helper method where you pass in an axis, my array of corners, the other array of corners
 	// if true, no overlap along axis
 	// else, overlap along axis
-	//bool Axis(vector3[])
+	bool CollidingOnAxis(vector3 axis, vector3 myCornersG[], vector3 otherCornersG[]);
 };//class
 
 } //namespace Simplex

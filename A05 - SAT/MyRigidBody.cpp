@@ -360,6 +360,85 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	v3_myX = glm::normalize(glm::cross(temp1, temp2));
 	//std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
 
+	if (!CollidingOnAxis(v3_myX, myCornersG, otherCornersG))
+	{
+		std::cout << "failed my x\n";
+		return 1;
+	}
+
+	// my y
+	temp1 = myCornersG[4] - myCornersG[0];
+	temp2 = myCornersG[1] - myCornersG[0];
+	vector3 v3_myY = glm::normalize(glm::cross(temp1, temp2));
+	std::cout << "(" << v3_myY.x << ", " << v3_myY.y << ", " << v3_myY.z << ")\n";
+	if (!CollidingOnAxis(v3_myY, myCornersG, otherCornersG))
+	{
+		std::cout << "failed my y\n";
+		return 1;
+	}
+
+	// my z
+	temp1 = myCornersG[1] - myCornersG[0];
+	temp2 = myCornersG[2] - myCornersG[0];
+	vector3 v3_myZ = glm::normalize(glm::cross(temp1, temp2));
+	std::cout << "(" << v3_myZ.x << ", " << v3_myZ.y << ", " << v3_myZ.z << ")\n";
+	if (!CollidingOnAxis(v3_myZ, myCornersG, otherCornersG))
+	{
+		std::cout << "failed my z\n";
+		return 1;
+	}
+
+	// other x
+	temp1 = otherCornersG[2] - otherCornersG[0];
+	temp2 = otherCornersG[4] - otherCornersG[0];
+	vector3 v3_otherX = glm::normalize(glm::cross(temp1, temp2));
+	std::cout << "(" << v3_otherX.x << ", " << v3_otherX.y << ", " << v3_otherX.z << ")\n";
+	if (!CollidingOnAxis(v3_otherX, myCornersG, otherCornersG))
+	{
+		std::cout << "failed other y\n";
+		return 1;
+	}
+	
+	// other y
+	temp1 = otherCornersG[4] - otherCornersG[0];
+	temp2 = otherCornersG[1] - otherCornersG[0];
+	vector3 v3_otherY = glm::normalize(glm::cross(temp1, temp2));
+	std::cout << "(" << v3_otherY.x << ", " << v3_otherY.y << ", " << v3_otherY.z << ")\n";
+	if (!CollidingOnAxis(v3_otherY, myCornersG, otherCornersG))
+	{
+		std::cout << "failed other y\n";
+		return 1;
+	}
+	
+	// other z
+	temp1 = otherCornersG[1] - otherCornersG[0];
+	temp2 = otherCornersG[2] - otherCornersG[0];
+	vector3 v3_otherZ = glm::normalize(glm::cross(temp1, temp2));
+	std::cout << "(" << v3_otherZ.x << ", " << v3_otherZ.y << ", " << v3_otherZ.z << ")\n";
+	if (!CollidingOnAxis(v3_otherZ, myCornersG, otherCornersG))
+	{
+		std::cout << "failed other z\n";
+		return 1;
+	}
+
+	// now onto the 9 cross products
+	
+	// my x cross other x
+	// my x cross other y
+	// my x cross other z
+
+	// my y cross other x
+	// my y cross other y
+	// my y cross other z
+
+	// my z cross other x
+	// my z cross other y
+	// my z cross other z
+
+	std::cout << "";
+
+
+	/*
 	// start projecting global points onto axis for both objects
 	vector3 myCornersP[8], otherCornersP[8]; // P for projected along axis
 
@@ -376,7 +455,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 		myCornersM[i] = glm::dot(myCornersG[i], v3_myX);
 		myCornersP[i] = v3_myX * glm::dot(myCornersG[i], v3_myX);
 		//std::cout << "myCornersP["<< i << "] = (" << myCornersP[i].x << ", " << myCornersP[i].y << ", " << myCornersP[i].z << ")\n";
-		//std::cout << "myCornersM[" << i << "] = " << myCornersM[i] << "\n";
+		std::cout << "myCornersM[" << i << "] = " << myCornersM[i] << "\n";
 
 		// if point is greater than max, set max to that
 		if (myCornersM[i] > myMaxAlongAxis)
@@ -388,7 +467,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 		otherCornersM[i] = glm::dot(otherCornersG[i], v3_myX);
 		otherCornersP[i] = v3_myX * glm::dot(otherCornersG[i], v3_myX);
 		//std::cout << "otherCornersP[" << i << "] = (" << otherCornersP[i].x << ", " << otherCornersP[i].y << ", " << otherCornersP[i].z << ")\n";
-		//std::cout << "otherCornersM[" << i << "] = " << otherCornersM[i] << "\n";
+		std::cout << "otherCornersM[" << i << "] = " << otherCornersM[i] << "\n";
 
 		// if point is greater than max, set max to that
 		if (otherCornersM[i] > otherMaxAlongAxis)
@@ -399,6 +478,27 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	}
 
 	// find my max and min
+	myMaxAlongAxis = myCornersM[0];
+	myMinAlongAxis = myCornersM[0];
+	otherMaxAlongAxis = otherCornersM[0];
+	otherMinAlongAxis = otherCornersM[0];
+	for (uint i = 0; i < 8; i++)
+	{
+		// if point is greater than max, set max to that
+		if (myCornersM[i] > myMaxAlongAxis)
+			myMaxAlongAxis = myCornersM[i];
+		// if point is less than min, set min to that
+		if (myCornersM[i] < myMinAlongAxis)
+			myMinAlongAxis = myCornersM[i];
+		
+		// if point is greater than max, set max to that
+		if (otherCornersM[i] > otherMaxAlongAxis)
+			otherMaxAlongAxis = otherCornersM[i];
+		// if point is less than min, set min to that
+		if (otherCornersM[i] < otherMinAlongAxis)
+			otherMinAlongAxis = otherCornersM[i];
+	}
+
 	std::cout << "my max = " << myMaxAlongAxis << "\n";
 	std::cout << "my min = " << myMinAlongAxis << "\n";
 
@@ -412,6 +512,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 		std::cout << "failed my x\n";
 		return 1;
 	}
+	//*/
 
 	// BAD
 	// local to global
@@ -465,4 +566,82 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	//return 1;
 	//*/
 	return eSATResults::SAT_NONE;
+}
+
+bool MyRigidBody::CollidingOnAxis(vector3 axis, vector3 myCornersG[], vector3 otherCornersG[])
+{
+	// start projecting global points onto axis for both objects
+	vector3 myCornersP[8], otherCornersP[8]; // P for projected along axis
+
+	// now, how do I figure out which point is max and min?
+	// my suspicion = store dot product, b/c that reps magnitude, and it can be negative
+	// whichever is lowest = min
+	// whichever is highest = max
+
+	float myCornersM[8], otherCornersM[8]; // M for magnitude of dot product
+	float myMaxAlongAxis = 0.0f, myMinAlongAxis = 0.0f, otherMaxAlongAxis = 0.0f, otherMinAlongAxis = 0.0f;
+	for (uint i = 0; i < 8; i++)
+	{
+		// point = axis (unit vector) multiplied by magnitude (dot product)
+		myCornersM[i] = glm::dot(myCornersG[i], axis);
+		myCornersP[i] = axis * glm::dot(myCornersG[i], axis);
+		//std::cout << "myCornersP["<< i << "] = (" << myCornersP[i].x << ", " << myCornersP[i].y << ", " << myCornersP[i].z << ")\n";
+		std::cout << "myCornersM[" << i << "] = " << myCornersM[i] << "\n";
+
+		// if point is greater than max, set max to that
+		if (myCornersM[i] > myMaxAlongAxis)
+			myMaxAlongAxis = myCornersM[i];
+		// if point is less than min, set min to that
+		if (myCornersM[i] < myMinAlongAxis)
+			myMinAlongAxis = myCornersM[i];
+
+		otherCornersM[i] = glm::dot(otherCornersG[i], axis);
+		otherCornersP[i] = axis * glm::dot(otherCornersG[i], axis);
+		//std::cout << "otherCornersP[" << i << "] = (" << otherCornersP[i].x << ", " << otherCornersP[i].y << ", " << otherCornersP[i].z << ")\n";
+		std::cout << "otherCornersM[" << i << "] = " << otherCornersM[i] << "\n";
+
+		// if point is greater than max, set max to that
+		if (otherCornersM[i] > otherMaxAlongAxis)
+			otherMaxAlongAxis = otherCornersM[i];
+		// if point is less than min, set min to that
+		if (otherCornersM[i] < otherMinAlongAxis)
+			otherMinAlongAxis = otherCornersM[i];
+	}
+
+	// find my max and min
+	myMaxAlongAxis = myCornersM[0];
+	myMinAlongAxis = myCornersM[0];
+	otherMaxAlongAxis = otherCornersM[0];
+	otherMinAlongAxis = otherCornersM[0];
+	for (uint i = 0; i < 8; i++)
+	{
+		// if point is greater than max, set max to that
+		if (myCornersM[i] > myMaxAlongAxis)
+			myMaxAlongAxis = myCornersM[i];
+		// if point is less than min, set min to that
+		if (myCornersM[i] < myMinAlongAxis)
+			myMinAlongAxis = myCornersM[i];
+
+		// if point is greater than max, set max to that
+		if (otherCornersM[i] > otherMaxAlongAxis)
+			otherMaxAlongAxis = otherCornersM[i];
+		// if point is less than min, set min to that
+		if (otherCornersM[i] < otherMinAlongAxis)
+			otherMinAlongAxis = otherCornersM[i];
+	}
+
+	std::cout << "my max = " << myMaxAlongAxis << "\n";
+	std::cout << "my min = " << myMinAlongAxis << "\n";
+
+	// and other
+	std::cout << "other max = " << otherMaxAlongAxis << "\n";
+	std::cout << "other min = " << otherMinAlongAxis << "\n";
+
+	// now test collision along this one axis
+	if (myMaxAlongAxis < otherMinAlongAxis || otherMaxAlongAxis < myMinAlongAxis)
+	{
+		std::cout << "failed on axis (" << axis.x << ", " << axis.y << ", " << axis.z << ")\n\n";
+		return false;
+	}
+	return true;
 }
