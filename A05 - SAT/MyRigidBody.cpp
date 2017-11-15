@@ -289,47 +289,47 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 	// ideas borrowed from E07
 	// translate all 16 points (8 for my box, 8 for other box) from local to global
-	vector3 myCorners[8], otherCorners[8];
+	vector3 myCornersL[8], otherCornersL[8], myCornersG[8], otherCornersG[8];
 
 	// back face
 	// 2 3
 	// 0 1
-	myCorners[0] = m_v3MinL;
-	myCorners[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
-	myCorners[2] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z);
-	myCorners[3] = vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z);
+	myCornersL[0] = m_v3MinL;
+	myCornersL[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
+	myCornersL[2] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z);
+	myCornersL[3] = vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z);
 	
 	// front face
 	// 6 7
 	// 4 5
-	myCorners[4] = vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z);
-	myCorners[5] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z);
-	myCorners[6] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z);
-	myCorners[7] = m_v3MaxL;
+	myCornersL[4] = vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z);
+	myCornersL[5] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z);
+	myCornersL[6] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z);
+	myCornersL[7] = m_v3MaxL;
 
 	// back face
 	// 2 3
 	// 0 1
-	otherCorners[0] = a_pOther->m_v3MinL;
-	otherCorners[1] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MinL.z);
-	otherCorners[2] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MinL.z);
-	otherCorners[3] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MinL.z);
+	otherCornersL[0] = a_pOther->m_v3MinL;
+	otherCornersL[1] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MinL.z);
+	otherCornersL[2] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MinL.z);
+	otherCornersL[3] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MinL.z);
 
 	// front face
 	// 6 7
 	// 4 5
-	otherCorners[4] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MaxL.z);
-	otherCorners[5] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MaxL.z);
-	otherCorners[6] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MaxL.z);
-	otherCorners[7] = a_pOther->m_v3MaxL;
+	otherCornersL[4] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MaxL.z);
+	otherCornersL[5] = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MaxL.z);
+	otherCornersL[6] = vector3(a_pOther->m_v3MinL.x, a_pOther->m_v3MaxL.y, a_pOther->m_v3MaxL.z);
+	otherCornersL[7] = a_pOther->m_v3MaxL;
 	
 	// is this step even necessary?
 	// actually yes, very yes
-	// how else can I properly project onto global axes for each test?
+	// how else can I properly project onto axes for each test?
 	for (uint i = 0; i < 8; i++)
-		myCorners[i] = vector3(m_m4ToWorld * vector4(myCorners[i], 1.0f));
+		myCornersG[i] = vector3(m_m4ToWorld * vector4(myCornersL[i], 1.0f));
 	for (uint i = 0; i < 8; i++)
-		otherCorners[i] = vector3(m_m4ToWorld * vector4(otherCorners[i], 1.0f));
+		otherCornersG[i] = vector3(m_m4ToWorld * vector4(otherCornersL[i], 1.0f));
 
 	// alright, how do we do the easy axes?
 	// excerpt from orange book:
@@ -353,9 +353,37 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// maybe, we 
 	vector3 v3_myX = vector3(1.0f, 0.0f, 0.0f);
 
+	// cross local coords to get axis???
+	vector3 temp1 = myCornersG[4] - myCornersG[0];
+	vector3 temp2 = myCornersG[1] - myCornersG[0];
+
+	v3_myX = glm::normalize(glm::cross(temp1, temp2));
+
+	// start projecting global points onto axis for both objects
+	vector3 myCornersP[8], otherCornersP[8];
+	for (uint i = 0; i < 8; i++)
+	{
+		// point = axis (unit vector) multiplied by magnitude (dot product)
+		myCornersP[i] = v3_myX * glm::dot(myCornersG[i], v3_myX);
+		otherCornersP[i] = v3_myX * glm::dot(otherCornersG[i], v3_myX);
+	}
+
+	// now, how do I figure out which point is max and min?
+	// my suspicion = store dot product, b/c that reps magnitude, and it can be negative
+	// whichever is lowest = min
+	// whichever is highest = max
+
+
+	// BAD
 	// local to global
 	//v3_myX = glm::normalize(vector3(m_m4ToWorld * vector4(m_v3Center, 1.0f)));
+	
+	// DEBUG
 	std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
+	//std::cout << "(" << m_v3MinL.x << ", " << m_v3MinL.y << ", " << m_v3MinL.z << ")\n";
+	//std::cout << "(" << myCornersL[0].x << ", " << myCornersL[0].y << ", " << myCornersL[0].z << ")\n";
+	//std::cout << "(" << m_v3Center.x << ", " << m_v3Center.y << ", " << m_v3Center.z << ")\n";
+
 	v3_rA = GetHalfWidth().x;
 	v3_rA = glm::dot(GetHalfWidth(), v3_myX);
 	v3_rB = a_pOther->GetHalfWidth().x;
