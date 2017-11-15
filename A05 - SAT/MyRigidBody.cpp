@@ -354,36 +354,75 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	vector3 v3_myX = vector3(1.0f, 0.0f, 0.0f);
 
 	// cross local coords to get axis???
-	vector3 temp1 = myCornersG[4] - myCornersG[0];
-	vector3 temp2 = myCornersG[1] - myCornersG[0];
+	vector3 temp1 = myCornersG[2] - myCornersG[0];//myCornersG[4] - myCornersG[0]; // z // these two crossed w/each other form y-axis
+	vector3 temp2 = myCornersG[4] - myCornersG[0];//myCornersG[1] - myCornersG[0]; // x // these two crossed w/each other form y-axis
 
 	v3_myX = glm::normalize(glm::cross(temp1, temp2));
+	//std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
 
 	// start projecting global points onto axis for both objects
-	vector3 myCornersP[8], otherCornersP[8];
-	for (uint i = 0; i < 8; i++)
-	{
-		// point = axis (unit vector) multiplied by magnitude (dot product)
-		myCornersP[i] = v3_myX * glm::dot(myCornersG[i], v3_myX);
-		otherCornersP[i] = v3_myX * glm::dot(otherCornersG[i], v3_myX);
-	}
+	vector3 myCornersP[8], otherCornersP[8]; // P for projected along axis
 
 	// now, how do I figure out which point is max and min?
 	// my suspicion = store dot product, b/c that reps magnitude, and it can be negative
 	// whichever is lowest = min
 	// whichever is highest = max
 
+	float myCornersM[8], otherCornersM[8]; // M for magnitude of dot product
+	float myMaxAlongAxis = 0.0f, myMinAlongAxis = 0.0f, otherMaxAlongAxis = 0.0f, otherMinAlongAxis = 0.0f;
+	for (uint i = 0; i < 8; i++)
+	{
+		// point = axis (unit vector) multiplied by magnitude (dot product)
+		myCornersM[i] = glm::dot(myCornersG[i], v3_myX);
+		myCornersP[i] = v3_myX * glm::dot(myCornersG[i], v3_myX);
+		//std::cout << "myCornersP["<< i << "] = (" << myCornersP[i].x << ", " << myCornersP[i].y << ", " << myCornersP[i].z << ")\n";
+		//std::cout << "myCornersM[" << i << "] = " << myCornersM[i] << "\n";
+
+		// if point is greater than max, set max to that
+		if (myCornersM[i] > myMaxAlongAxis)
+			myMaxAlongAxis = myCornersM[i];
+		// if point is less than min, set min to that
+		if (myCornersM[i] < myMinAlongAxis)
+			myMinAlongAxis = myCornersM[i];
+
+		otherCornersM[i] = glm::dot(otherCornersG[i], v3_myX);
+		otherCornersP[i] = v3_myX * glm::dot(otherCornersG[i], v3_myX);
+		//std::cout << "otherCornersP[" << i << "] = (" << otherCornersP[i].x << ", " << otherCornersP[i].y << ", " << otherCornersP[i].z << ")\n";
+		//std::cout << "otherCornersM[" << i << "] = " << otherCornersM[i] << "\n";
+
+		// if point is greater than max, set max to that
+		if (otherCornersM[i] > otherMaxAlongAxis)
+			otherMaxAlongAxis = otherCornersM[i];
+		// if point is less than min, set min to that
+		if (otherCornersM[i] < otherMinAlongAxis)
+			otherMinAlongAxis = otherCornersM[i];
+	}
+
+	// find my max and min
+	std::cout << "my max = " << myMaxAlongAxis << "\n";
+	std::cout << "my min = " << myMinAlongAxis << "\n";
+
+	// and other
+	std::cout << "other max = " << otherMaxAlongAxis << "\n";
+	std::cout << "other min = " << otherMinAlongAxis << "\n\n";
+
+	// now test collision along this one axis
+	if (myMaxAlongAxis < otherMinAlongAxis || otherMaxAlongAxis < myMinAlongAxis)
+	{
+		std::cout << "failed my x\n";
+		return 1;
+	}
 
 	// BAD
 	// local to global
 	//v3_myX = glm::normalize(vector3(m_m4ToWorld * vector4(m_v3Center, 1.0f)));
 	
 	// DEBUG
-	std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
+	//std::cout << "(" << v3_myX.x << ", " << v3_myX.y << ", " << v3_myX.z << ")\n";
 	//std::cout << "(" << m_v3MinL.x << ", " << m_v3MinL.y << ", " << m_v3MinL.z << ")\n";
 	//std::cout << "(" << myCornersL[0].x << ", " << myCornersL[0].y << ", " << myCornersL[0].z << ")\n";
 	//std::cout << "(" << m_v3Center.x << ", " << m_v3Center.y << ", " << m_v3Center.z << ")\n";
-
+	/*
 	v3_rA = GetHalfWidth().x;
 	v3_rA = glm::dot(GetHalfWidth(), v3_myX);
 	v3_rB = a_pOther->GetHalfWidth().x;
@@ -393,7 +432,8 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 		std::cout << "failed my x\n";
 		return 1;
 	}
-
+	//*/
+	/*
 	// my y
 	vector3 v3_myY = vector3(0.0f, 1.0f, 0.0f);
 	v3_rA = GetHalfWidth().y;

@@ -247,6 +247,11 @@ private:
 	OUTPUT: 0 for colliding, other = first axis that succeeds test
 	*/
 	uint SAT(MyRigidBody* const a_pOther);
+
+	// helper method where you pass in an axis, my array of corners, the other array of corners
+	// if true, no overlap along axis
+	// else, overlap along axis
+	//bool Axis(vector3[])
 };//class
 
 } //namespace Simplex
