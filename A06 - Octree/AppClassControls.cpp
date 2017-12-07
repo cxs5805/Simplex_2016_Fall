@@ -438,6 +438,35 @@ void Application::ProcessKeyboard(void)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		m_pCameraMngr->MoveVertical(m_fMovementSpeed * fMultiplier);
 #pragma endregion
+
+#pragma region Octree Controls
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+	{
+		m_uOctantLevels++;
+		if (m_uOctantLevels > m_uMaxOctantLevels)
+		{
+			m_uOctantLevels = m_uMaxOctantLevels;
+
+			// already have max size tree, so just leave
+			return;
+		}
+			
+		// reconstruct tree
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+	{
+		m_uOctantLevels--;
+		if (m_uOctantLevels < 0 || m_uOctantLevels == -1)
+		{
+			m_uOctantLevels = 1;
+
+			// already have min size tree, so just leave
+			return;
+		}
+			
+		// reconstruct tree
+	}
+#pragma endregion
 }
 //Joystick
 void Application::ProcessJoystick(void)
